@@ -59,7 +59,7 @@ The directory will be used to store
 
 Since maintaining documentation on multiple places is tidious, the command line flags and options are not documented here; please run autobuild with the `--help` option to see all the flags and options.
 
-Assuming a mainstream setup (no custom MinGW toolchain),, to build `mpc` run the command
+Assuming a mainstream setup (no custom MinGW toolchain), to build `mpc` run the command
 ```shell
 autobuild.sh --root ~/builds mpc
 ```
