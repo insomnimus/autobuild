@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+error "srt doesn't build; cmake configuration step fails with a weird error"
+
+download srt lib/libsrt.a
+
+install_lib libressl
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_{STATIC=ON,SHARED=OFF} \
+	-DENABLE_{APPS,LOGGING,TESTING,UNITTESTS}=OFF \
+	-DOPENSSL_USE_STATIC_LIBS=ON \
+	-DUSE_ENCLIB=libressl \
+	-DUSE_STATIC_LIBSTDCXX=ON

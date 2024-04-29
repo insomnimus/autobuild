@@ -1,0 +1,14 @@
+#!/usr/bin/env dash
+# shellcheck disable=SC2086
+
+case "$AB_STRIP" in
+"")
+	echo 1>&2 "ab-strip: error: \$AB_STRIP is not set"
+	exit 1
+	;;
+*ab-strip*)
+	echo 1>&2 "ab-strip: error: \$AB_STRIP is set to ab-strip, causing infinite recursion"
+	exit 1
+	;;
+*) exec $AB_STRIP "$@" ;;
+esac

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download tre lib/libtre.a
+install_lib iconv
+
+set_env
+
+run ./utils/autogen.sh
+configure_install_par \
+	--disable-{profile,debug,agrep,nls,rpath} \
+	--enable-{approx,largefile,year2038} \
+	--with-{gnu-ld,libiconv-prefix="$AB_PREFIX"}
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/tre.pc" Libs='-L${libdir} -ltre'

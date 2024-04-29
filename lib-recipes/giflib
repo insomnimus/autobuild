@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download giflib lib/libgif.a
+
+# Clang doesn't accept --soname but giflib wants to pass it.
+AB_TOOLCHAIN=gcc
+set_env
+
+apply_patches -Np1
+
+run make PREFIX="$AB_PREFIX" UNAME=MINGW
+# run make libutil.a PREFIX="$AB_PREFIX" UNAME=MINGW
+run make install-lib PREFIX="$AB_PREFIX" UNAME=MINGW
+
+rm -f "$AB_PREFIX"/{lib/libgif.dll.a,bin/libgif-?.dll}

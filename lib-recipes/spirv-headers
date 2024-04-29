@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+download spirv-headers include/spirv
+
+set_env
+
+mkcd autobuild
+cmake_install ..

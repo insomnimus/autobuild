@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download rist lib/librist.a
+install_lib cjson
+
+set_env
+
+meson_install \
+	-D{test,static_analyze,builtin_cjson,built_tools}=false \
+	-Dhave_mingw_pthreads=true

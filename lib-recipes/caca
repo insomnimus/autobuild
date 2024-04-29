@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+download caca lib/libcaca.a
+install_lib zlib fontconfig freetype
+
+set_env
+
+for p in "$PATCHES"/*.patch; do
+	run patch -p1 -i "$p"
+done
+
+# (msys2) Wrong result with ucrt
+export ac_cv_func_sprintf_s=yes
+export ac_cv_func_vsnprintf_s=yes
+run autoreconf -fi
+
+configure_install_par \
+	--disable-{ncurses,csharp,java,python,ruby,doc,cppunit,zzuf} \
+	--enable-win32 \
+	--with-gnu-ld

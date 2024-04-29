@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+CURL_OPT=gnutls_http3
+. "$AB_DIR/lib-recipes/curl"

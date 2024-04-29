@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+download gnutls lib/libgnutls.a
+install_lib iconv nettle gmp zlib zstd brotli unistring tasn1 idn2
+
+set_env p:-DIN_LIBUNISTRING
+
+configure_install_par \
+	--disable-{code-coverage,maintainer-mode,doc,manpages,tools,tests,nls,rpath,gcc-warnings} \
+	--disable-libdane \
+	--enable-{openssl-compatibility,threads,ssl3-support,srp-authentication,year2038} \
+	--with-gnu-ld \
+	--without-included-{unistring,libtasn1} \
+	--with-{libz,iconv}-prefix="$AB_PREFIX" \
+	--without-p11-kit
+
+# The pkg-config file doesn't have -ltasn1 and pthread, add it.
+edit-pc -p "$AB_PREFIX"/lib/pkgconfig/gnutls.pc Libs.private+=-l{tasn1,pthread}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download zstd lib/libzstd.a
+
+set_env
+
+mkcd autobuild
+cmake_install ../build/cmake \
+	-DZSTD_BUILD_{{CONTRIB,SHARED,TESTS}=OFF,STATIC=ON} \
+	app:-DZSTD_BUILD_PROGRAMS=ON \
+	lib:-DZSTD_BUILD_PROGRAMS=OFF
+
+out "$AB_PREFIX/bin/zstd.exe"

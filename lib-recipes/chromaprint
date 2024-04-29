@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+download chromaprint lib/libchromaprint.a
+install_lib fftw
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{TESTS,TOOLS}=OFF \
+	-DFFT_LIB=fftw3f
+
+# The .pc file needs some changes.
+pc="$AB_PREFIX/lib/pkgconfig/libchromaprint.pc"
+edit-pc -p "$pc" \
+	Requires+=fftw3f \
+	Cflags+=-DCHROMAPRINT_NODLL
+
+cp -f "$pc" "$AB_PREFIX/lib/pkgconfig/chromaprint.pc"

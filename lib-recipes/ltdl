@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+need_exec help2man
+download ltdl lib/libltdl.a
+
+apply_patches -Nbp1
+set_env
+
+configure_build_par
+run make install-{libLTLIBRARIES,includeHEADERS,ltdlincludeHEADERS}

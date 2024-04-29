@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# TODO: Stop using the master branch when there's a tag newer than 0.4.1
+download xevd lib/libxevd.a
+
+set_env
+
+mkcd autobuild
+cmake_install ..
+
+run rm -f "$AB_PREFIX/"{lib/libxevd.dll.a,bin/libxevd.dll}
+run mv -f "$AB_PREFIX/lib/xevd/libxevd.a" "$AB_PREFIX/lib/libxevd.a"
+run rmdir "$AB_PREFIX/lib/xevd"

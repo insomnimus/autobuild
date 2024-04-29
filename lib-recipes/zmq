@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download zmq lib/libzmq.a
+install_lib sodium
+
+set_env -DZMQ_STATIC
+
+configure_install_par \
+	--disable-werror \
+	--disable-{perf,curve-keygen} \
+	--with-{gnu-ld,libsodium} \
+	--without-{gcov,militant,docs}

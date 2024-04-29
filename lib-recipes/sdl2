@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download sdl2 lib/libSDL2.a
+install_lib iconv samplerate vulkan
+
+set_env
+
+export LIBS=-liconv
+
+mkcd autobuild
+cmake_install .. \
+	-DSDL_{STATIC,VULKAN,LIBICONV}=ON \
+	-DSDL_{SHARED,TEST,LIBSAMPLERATE_SHARED,RPATH,CCACHE}=OFF \
+	-DPKG_CONFIG_ARGN=--static

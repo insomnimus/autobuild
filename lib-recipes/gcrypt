@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download gcrypt lib/libgcrypt.a
+install_lib gpg-error
+
+set_env
+
+# run autoreconf -fi
+configure_install_par \
+	--disable-{maintainer-mode,dev-random,random-daemon,doc} \
+	--with-gnu-ld \
+	--with-libgpg-error-prefix="$AB_PREFIX"

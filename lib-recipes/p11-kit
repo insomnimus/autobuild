@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+download p11-kit lib/libp11-kit.a
+
+install_lib libffi
+
+set_env
+
+run meson setup . autobuild \
+	--cross-file "$AB_MESON" \
+	--prefix "$AB_PREFIX" \
+	--buildtype plain \
+	--default-library static \
+	-Ddebug=false \
+	-Dmodule_path="p11-modules" \
+	-Dlibffi=enabled \
+	-Dsystemd=disabled \
+	-Dbash_completion=disabled \
+	-D{gtk_doc,man,nls,test,post_install_test}=false
+
+run meson install -C autobuild
+
+# Thanks meson for using .dll.a...
+ln -fs libp11-kit.dll.a "$AB_PREFIX/lib/libp11-kit.a"

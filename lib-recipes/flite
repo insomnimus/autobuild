@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+download flite lib/libflite.a
+
+# Warning: The configure script is hard-coded to use mingw tools.
+AB_TOOLCHAIN=gcc
+set_env -fno-lto
+
+# wget -qO media-autobuild_suite.patch https://raw.githubusercontent.com/m-ab-s/mabs-patches/master/flite/0001-tools-find_sts_main.c-Include-windows.h-before-defin.patch
+# run patch -p1 -i media-autobuild_suite.patch
+
+for p in "$PATCHES"/*.patch; do
+	run patch -p0 -i "$p"
+done
+
+# run autoreconf -fi
+configure_install_par \
+	--with-audio=none
+
+# These binaries don't work but the library does.
+rm -f "$AB_PREFIX"/bin/flite{,_*}.exe

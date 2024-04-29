@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+need_exec tclsh
+download sqlite3 lib/libsqlite3.a
+install_lib zlib tcl app:readline
+
+# The download source is a zip file, which does not preserve file permissions.
+find . -name configure -print0 | xargs -0 chmod +x
+
+set_env \
+	-DSQLITE_{ENABLE_COLUMN_METADATA,USE_MALLOC_H,USE_MSIZE,DISABLE_DIRSYNC,ENABLE_DBSTAT_VTAB,ENABLE_MATH_FUNCTIONS}=1 \
+	-DSTATIC_BUILD
+
+apply_patches -p1
+# It tries to run mksourceid without the .exe extension, even though it builds as .exe (still a native binary tho, not for Windows).
+ln -s mksourceid.exe mksourceid
+# Target detection is shabby, need manual intervention.
+find . -name configure -print0 | xargs -0 sed -i 's/TARGET_EXEEXT=.*/TARGET_EXEEXT=.exe/g'
+
+if [[ $APP ]]; then
+	append_pkgconfig readline tcl
+fi
+
+configure_install_par \
+	--disable-editline \
+	lib:--disable-readline \
+	--enable-tcl \
+	--with-tcl="$AB_PREFIX/lib" \
+	app:{--enable-readline,--with-readline-inc=-I"$AB_PREFIX/include"} \
+	--enable-{threadsafe,all,session} \
+	TCLLIBDIR="$AB_PREFIX/lib/sqlite3"
+
+if [[ $APP ]]; then
+	# Build extra sqlite tools.
+	run make -j$JOBS sqlite3_analyzer.exe sqldiff.exe
+	out {sqlite3,sqlite3_analyzer,sqldiff}.exe
+fi

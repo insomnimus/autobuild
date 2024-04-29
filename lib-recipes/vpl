@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download vpl lib/libvpl.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS,TOOLS}=OFF \
+	-DINSTALL_EXAMPLE_CODE=OFF

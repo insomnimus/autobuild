@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download mpdclient lib/libmpdclient.a
+
+set_env
+
+run meson setup . out \
+	--cross-file "$AB_MESON" \
+	--prefix "$AB_PREFIX" \
+	--buildtype plain \
+	--default-library static \
+	-Ddebug=false \
+	-D{documentation,test}=false
+
+run meson install -C out

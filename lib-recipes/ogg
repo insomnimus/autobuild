@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download ogg lib/libogg.a
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--disable-maintainer-mode \
+	--with-gnu-ld

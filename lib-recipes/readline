@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+download readline lib/libreadline.a
+install_lib termcap
+msys_install

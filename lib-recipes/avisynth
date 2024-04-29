@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+eprint "autobuild error: avisynth is not yet supported"
+exit 1
+
+download avisynth lib/libavisynth.a
+
+install_lib devIL
+
+set_env
+
+# TODO: ENABLE_CUDA
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF}

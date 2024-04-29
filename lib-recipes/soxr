@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download soxr lib/libsoxr.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{EXAMPLES,LSR_TESTS,TESTS}=OFF \
+	-DWITH_OPENMP=ON

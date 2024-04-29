@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# error "shaderc does not compile"
+download shaderc lib/libshaderc.a
+install_lib glslang spirv-tools spirv-headers
+
+# apply_patches -Nbp1
+
+version=""
+if [[ -f .ab_version ]]; then
+	version="$(cat .ab_version)"
+else
+	version="$(git describe --tags --abbrev=0)"
+fi
+version="${version#[vV]}"
+
+# De-vendor libs and disable git versioning
+sed '/examples/d;/third_party/d' -i CMakeLists.txt
+sed '/build-version/d' -i glslc/CMakeLists.txt
+cat <<-EOF >glslc/src/build-version.inc
+	"$version\\n"
+	"$(db.get spirv-tools)\\n"
+	"$(db.get glslang)\\n"
+EOF
+
+# run ./utils/git-sync-deps
+
+extra_libs=(-l:lib{glslang,SPIRV,SPVRemapper,MachineIndependent,GenericCodeGen}.a)
+set_env llvm:cxx:-Wno-c++11-narrowing "${extra_libs[@]}"
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_EXTERNAL=OFF \
+	-DBUILD_{GMOCK,SHARED_LIBS}=OFF \
+	-DINSTALL_GTEST=OFF \
+	-DSHADERC_SKIP_{COPYRIGHT_CHECK,EXAMPLES,TESTS}=ON \
+	-Dglslang_SOURCE_DIR="$AB_PREFIX/include/glslang" \
+	-DSHADERC_SKIP_TESTS=ON \
+	-DSHADERC_ENABLE_WERROR_COMPILE=OFF
+
+for f in "$AB_PREFIX"/lib/pkgconfig/shaderc{,_combined,_static}.pc; do
+	edit-pc -p "$f" \
+		Libs.private+="-L$AB_PREFIX/lib ${extra_libs[*]}" \
+		Requires+=SPIRV-Tools
+done

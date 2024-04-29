@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download vorbis lib/libvorbis.a
+install_lib ogg
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--with-gnu-ld \
+	--disable-{docs,examples,oggtest,maintainer-mode,dependency-tracking}

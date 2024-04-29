@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+error "openldap does not build because it wants to use fcntl() which doesn't exist on windows"
+# download_lib openldap openldap.tgz lib/libldap.a openldap-2.6.6
+download openldap lib/libldap.a
+install_lib gnurx gnutls gmp
+
+export lt_cv_deplibs_check_method='pass_all'
+set_env \
+	-l{gnutls,nettle,hogweed,gmp,regex,zstd,brotlienc,brotlidec,brotlicommon,z,iconv,pthread,ncrypt,crypt32} \
+	p:-Wno-implicit-int
+
+run_configure ./configure \
+	--disable-{debug,dynamic,slapd,balancer} \
+	--with-{gnu-ld,threads=nt,tls=gnutls,mp=gmp}
+
+run sed -i "s/#define socklen_t int/\/*#define socklen_t int*\//" include/portable.h
+run sed -i "s/#define snprintf _snprintf/\/*#define snprintf _snprintf*\//" include/portable.h
+run make depend
+run make # -j$JOBS
+run make install

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+download opencl-headers include/CL
+
+set_env
+
+mkcd autobuild
+cmake_install .. -DBUILD_TESTING=OFF

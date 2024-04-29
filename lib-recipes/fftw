@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+download fftw lib/libfftw3f.a
+
+set_env -Wno-implicit-function-declaration
+
+flags=(
+	--disable-{maintainer-mode,debug,doc,alloca,fortran}
+	--enable-{avx,avx2,sse2,threads}
+	--with-our-malloc
+)
+
+mkcd autobuild/single
+run_configure ../../configure "${flags[@]}" --enable-{single,sse}
+run make -j$JOBS
+run make install
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/fftw3f.pc" Libs+=-lpthread
+run cp -f "$AB_PREFIX/lib/pkgconfig"/{fftw3f,fftw3}.pc

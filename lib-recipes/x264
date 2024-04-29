@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+download x264 lib/libx264.a
+
+ffmpeg_prefix="$AB_OPT/ffmpeg_bare"
+# This script's called only from ffmpegs build script, which breaks change detection.
+# So we force a clean build.
+# if [[ -e $ffmpeg_prefix ]]; then
+# rm -rf -- "$ffmpeg_prefix"
+# fi
+
+info "installing basic ffmpeg for x264"
+FFMPEG=bare AB_PREFIX="$ffmpeg_prefix" install_lib ffmpeg
+
+set_env "-L$ffmpeg_prefix/lib" "-I$ffmpeg_prefix/include"
+
+# Note: This isn't a standard configure script, it doesn't like --target.
+run ./configure \
+	--host=x86_64-w64-mingw32 \
+	--prefix="$AB_PREFIX" \
+	--enable-static --disable-shared \
+	--disable-{cli,bashcompletion,avs}
+
+run make -j$JOBS
+run make install

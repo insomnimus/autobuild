@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download vulkan-headers include/vulkan/vulkan.h
+
+set_env
+
+# mkcd autobuild
+# cmake_install .. \
+# -DVULKAN_HPP_{SAMPLES,TESTS}_BUILD=OFF
+
+mkcd Vulkan-Headers/autobuild
+run_cmake .. -DBUILD_TESTS=OFF
+run cmake --install .

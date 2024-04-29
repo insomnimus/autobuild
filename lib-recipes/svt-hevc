@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+download svt-hevc lib/libSvtHevcEnc.a
+
+set_env x:-Wno-implicit-function-declaration
+
+mkcd autobuild
+cmake_install .. -DBUILD_{APP,SHARED_LIBS}=OFF

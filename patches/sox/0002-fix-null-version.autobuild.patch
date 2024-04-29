@@ -1,0 +1,16 @@
+On Windows, `sox --version` prints (null).
+This is a hotfix to address the issue.
+
+diff --git a/src/sox.c b/src/sox.c
+index 9e59a60d..319c9bfa 100644
+--- a/src/sox.c
++++ b/src/sox.c
+@@ -1801,7 +1801,7 @@ static void display_SoX_version(FILE * file)
+ 
+   fprintf(file, "%s:      SoX v%s%s%s\n",
+       myname,
+-      info->version,
++      VERSION,
+       info->version_extra ? "-" : "",
+       info->version_extra ? info->version_extra : "");
+ 

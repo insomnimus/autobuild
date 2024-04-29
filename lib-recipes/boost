@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+check=libboost_url.a
+if [[$AB_TOOLCHAIN == llvm ]]; then
+	check=libboost_url.lib
+fi
+
+download boost "lib/$check"
+install_lib iconv xz bzip2 zstd zlib
+
+unset_env
+# ./bootstrap.sh --with-libraries {atomic,chrono,cobalt,context,contract,coroutine,date_time,exception,fiberr,filesystem,graph,graph_parallel,headers,iostreams,json,locale,log,math,mpi,nowide,program_options,random,regex,serialization,stacktrace,system,thread,timer,type_erasure,url,wave}
+# TODO: enable ICU
+run ./bootstrap.sh \
+	--prefix="$AB_PREFIX" \
+	--with-libraries=all \
+	--without-libraries=python \
+	--without-icu
+
+set_env
+
+extra=""
+toolset=""
+case "$AB_TOOLCHAIN" in
+gcc)
+	echo "using gcc : mingw64 : x86_64-w64-mingw32-g++ ;" >user-config.jam
+	toolset=gcc
+	;;
+llvm)
+	echo "using clang : : $CC ;" >user-config.jam
+	toolset=clang
+	extra+=--without-json
+	;;
+*)
+	error "unhandled toolchain: $AB_TOOLCHAIN"
+	exit
+	;;
+esac
+
+run ./b2 install \
+	--user-config=./user-config.jam \
+	toolset="$toolset" target-os=windows architecture=x86 address-model=64 \
+	cflags="$CFLAGS" cxxflags="$CXXFLAGS" linkflags="$LDFLAGS" \
+	{warnings,warnings-as-errors,debug-symbols,runtime-debugging}=off \
+	--prefix="$AB_PREFIX" \
+	--system \
+	--without-python \
+	$extra \
+	variant=release \
+	link=static \
+	threading=multi \
+	-q

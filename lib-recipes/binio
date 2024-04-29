@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download binio lib/libbinio.a
+
+set_env p:-Wno-register
+
+run autoreconf -fi
+
+info "patching doc/Makefile.in since it fails and we don't need it"
+run : echo -e 'all:\ninstall:' >doc/Makefile.in
+echo -e 'all:\ninstall:' >doc/Makefile.in
+
+configure_install_par \
+	--with-gnu-ld \
+	--disable-maintainer-mode

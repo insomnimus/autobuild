@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+download ffmpeg lib/libavcodec.a
+
+# mkdir ab_patches
+# wget -P ab_patches https://raw.githubusercontent.com/m-ab-s/mabs-patches/master/ffmpeg/0001-glslang-Remove-HLSL-and-OGLCompiler-libraries.patch
+# for p in ./ab_patches/*.patch; do
+# git apply -3 --check --ignore-space-change --ignore-whitespace "$p" >/dev/null 2>&1
+# git am -q -3 --ignore-whitespace --no-gpg-sign "$p" >/dev/null 2>&1
+# done
+
+FFMPEG="${FFMPEG:-full}"
+
+install_lib ffnvcodec
+
+flags=(--enable-{schannel,d3d11va,dxva2,cuda,cuvid,nvenc,cuda-llvm,ffnvcodec,nvdec,nvenc})
+deps=()
+extra_libs=()
+
+basic=(
+	iconv amf bzlib:bzip2 zlib lzma:xz
+	gmp lib{x264,x265,aom,mp3lame:lame,opus,vorbis,vpx,dav1d,fdk-aac}
+	$(if [[ -n $APP ]]; then echo sdl2; fi)
+	# Hardware accels
+	libvpl opencl -l{cfgmgr32,ole32}
+	libxevd
+	# xevd and xeve have common symbols that clash when linked so ignore xeve for now.
+	# $(if [[ ${FFMPEG:-} != decoders ]]; then echo libxeve; fi)
+)
+zeranoe=(
+	"${basic[@]}"
+	# -lbluray
+	-l{xml2,png,bz2,z}
+	fontconfig libopencore-{amrnb,amrwb}:opencore-amr libtwolame
+	# libtls:libressl
+	lib{ass,xml2,freetype,harfbuzz}
+	lib{openjpeg,snappy,soxr,webp} #libbluray
+	lib{speex,theora,vidstab,zimg,rav1e}
+	libsvtav1:svt-av1 libvmaf libgsm
+)
+decoders=(
+	"${basic[@]}"
+	lib{twolame,gsm,gme}
+	libopencore-{amrnb,amrwb}:opencore-amr
+)
+full=(
+	"${zeranoe[@]}"
+	# vulkan
+	lib{fribidi,ilbc,mysofa,aribb24,bs2b,caca}
+	chromaprint
+	decklink:decklink-headers libcdio:cdio-paranoia
+	lib{flite,rist,gme}
+	# libglslang
+	libshaderc
+	# ffmpeg wants rubberband >= v1.8.1, but latest is 3.x (too new)
+)
+case "$FFMPEG" in
+bare)
+	if [[ $APP ]]; then
+		eprint "autobuild warning: disabling programs; you used FFMPEG=bare, which is meant for internal use by library build scripts"
+		APP=""
+	fi
+	;;
+basic) deps+=("${basic[@]}") ;;
+zeranoe) deps+=("${zeranoe[@]}") ;;
+decoders) deps+=("${decoders[@]}") ;;
+full) deps+=("${full[@]}") ;;
+*) error "unknown ffmpeg build preset: $FFMPEG" ;;
+esac
+
+if [[ $APP ]]; then
+	flags+=(--enable-{ffmpeg,ffprobe,ffplay})
+else
+	flags+=(--disable-programs)
+fi
+
+for lib in "${deps[@]}"; do
+	if [[ $lib == -l* ]]; then
+		extra_libs+=("$lib")
+		continue
+	fi
+
+	IFS=: read -ra arr <<<"$lib"
+	recipe="${arr[1]:-$lib}"
+	lib="${arr[0]}"
+	if [[ ${#arr[@]} == 1 && ${recipe:0:3} == lib ]]; then
+		install_lib "${recipe:3}"
+	else
+		install_lib "$recipe"
+	fi
+	flags+=("--enable-$lib")
+done
+
+if [[ $FFMPEG != bare ]]; then
+	extra_libs+=(-liconv)
+fi
+
+set_env \
+	-DLIBTWOLAME_STATIC \
+	x:-fno-lto \
+	cxx:-static-libstdc++
+
+# -DLIB{TWOLAME,XML}_STATIC \
+# -DCHROMAPRINT_NODLL \
+
+if [[ $FFMPEG == full ]]; then
+	append_pkgconfig chromaprint
+fi
+
+LDFLAGS+=" -l:libpthread.a $($CXX -print-file-name=libstdc++.a)"
+
+info "configuring ffmpeg"
+AB_CFLAGS="-O0 -fno-lto" run dash ./configure \
+	--arch=x86_64 --target-os=mingw64 ${AB_CPU:+--cpu=$AB_CPU} \
+	--cross-prefix=ab- \
+	--enable-static --disable-shared \
+	--prefix="$AB_PREFIX" \
+	--enable-{gpl,nonfree,version3} \
+	--enable-{runtime-cpudetect,cross-compile} \
+	--pkg-config-flags=--static \
+	--disable-{autodetect,debug,doc,htmlpages,manpages,podpages,txtpages} \
+	--enable-{avdevice,avcodec,avformat,swresample,swscale,postproc,avfilter} \
+	"${flags[@]}" \
+	--extra-version="autobuild.$FFMPEG.$AB_TOOLCHAIN" \
+	--extra-libs="${extra_libs[*]}"
+
+info "building ffmpeg"
+run make -j$JOBS
+run make install
+out "$AB_PREFIX/bin/"ff{mpeg,probe,play}.exe
+
+# These binaries are pretty fat so at least remove ffprobe and ffplay (leave ffmpeg for quick testing).
+if [[ $APP ]]; then
+	rm -f "$AB_PREFIX/bin/"ff{probe,play}.exe || true
+fi

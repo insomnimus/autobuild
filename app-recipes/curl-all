@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+CURL_OPT=all:winssl
+. "$AB_DIR/lib-recipes/curl"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download mysofa lib/libmysofa.a
+
+install_lib zlib
+
+set_env
+
+run mkdir autobuild
+run cd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS,TESTS}=OFF \
+	-DBUILD_STATIC_LIBS=ON \
+	-DZLIB_LIBRARY=libz

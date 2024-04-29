@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download lcms2 lib/liblcms2.a
+install_lib tiff zlib jpeg-turbo
+
+set_env
+
+NOCONFIGURE=1 run ./autogen.sh
+configure_install \
+	--disable-{dependency-tracking,maintainer-mode} \
+	--with-{jpeg,tiff,zlib}="$AB_PREFIX" \
+	--with-{gnu-ld,fastfloat,threaded,pthread}

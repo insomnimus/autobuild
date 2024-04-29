@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+install_lib mpdclient
+
+set_env
+
+info "building mpc"
+run meson setup out . \
+	--cross-file "$AB_MESON" \
+	--buildtype plain \
+	--prefix "$AB_PREFIX" \
+	--default-library static \
+	--unity on \
+	--prefer-static \
+	-Dtest=false \
+	-Ddocumentation=disabled
+
+cd out
+run meson compile
+
+out mpc.exe

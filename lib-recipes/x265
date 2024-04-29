@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download x265 lib/libx265.a
+
+install_lib svt-hevc
+
+set_env
+
+mkcd autobuild
+cmake_install ../source \
+	-DENABLE_{ASSEMBLY,SVT_HEVC}=ON \
+	-DENABLE_{CLI,LIBNUMA,SHARED,TESTS}=OFF

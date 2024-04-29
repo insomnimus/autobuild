@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+download deflate lib/libdeflate.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. -DLIBDEFLATE_BUILD_{{GZIP,SHARED_LIB,TESTS}=OFF,STATIC_LIB=ON}

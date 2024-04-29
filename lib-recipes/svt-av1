@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download svt-av1 lib/libSvtAv1Enc.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{APPS,TESTING}=OFF

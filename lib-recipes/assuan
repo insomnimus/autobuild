@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download assuan lib/libassuan.a
+install_lib gpg-error
+
+set_env
+
+# run ./autogen.sh
+configure_install_par \
+	--disable-doc \
+	--with-libgpg-error-prefix="$AB_PREFIX" \
+	--with-gnu-ld

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download lz4 lib/liblz4.a
+
+set_env
+
+run make install \
+	TARGET_OS=MINGW64 \
+	CC="$CC" \
+	PREFIX="$AB_PREFIX" \
+	WINDRES="$WINDRES"
+
+rm -f "$AB_PREFIX"/{bin/liblz4.dll,lib/liblz4.dll.a}
+out "$AB_PREFIX"/bin/lz4.exe

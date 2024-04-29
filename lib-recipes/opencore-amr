@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download opencore-amr lib/libopencore-amrnb.a
+install_lib binio
+
+set_env
+
+# run autoreconf -fi
+configure_install_par \
+	--disable-{examples,dependency-tracking} \
+	--with-gnu-ld

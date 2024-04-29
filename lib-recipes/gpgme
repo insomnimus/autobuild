@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+error "gpgme does not compile due to an invalid pointer cast error"
+download gpgme lib/libgpgme.a
+install_lib gpg-error assuan
+
+set_env
+
+# run ./autogen.sh
+configure_install_par \
+	--disable-{glibtest,{gpg,gpgsm,g13}-test} \
+	--enable-{languages=cl,cpp,largefile,year2038} \
+	--with-gnu-ld \
+	--with-{libgpg-error,libassuan}-prefix="$AB_PREFIX"

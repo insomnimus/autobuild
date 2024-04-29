@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+download pcaudiolib lib/libpcaudio.a
+
+set_env
+
+configure_install_par --without-{pulseaudio,alsa,coreaudio,oss}

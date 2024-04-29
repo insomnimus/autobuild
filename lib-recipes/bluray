@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download bluray lib/libbluray.a
+
+install_lib xml2 freetype fontconfig
+
+set_env
+
+# The pkg-config file doesn't add the flag to link libxml statically so we should add it.
+run sed -ri 's;(Cflags.*);\1 -DLIBXML_STATIC;' src/libbluray.pc.in
+run autoreconf -fi
+
+configure_install_par \
+	--disable-{dependency-tracking,werror,extra-warnings,examples,bdjava-jar,doxygen-doc} \
+	--with-{java9,sysroot="$AB_PREFIX",gnu-ld}

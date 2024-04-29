@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download ass lib/libass.a
+
+install_lib fontconfig unibreak fribidi harfbuzz iconv
+
+set_env
+
+# run autoreconf -fi
+configure_install_par \
+	--disable-{test,compare,profile,fuzz} \
+	--enable-{fontconfig,directwrite,libunibreak,asm} \
+	--with-gnu-ld

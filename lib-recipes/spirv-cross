@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+download spirv-cross lib/libspirv-cross-c.a
+install_lib spirv-headers spirv-tools glslang
+
+# Use system provided glslang and spirv-tools binaries.
+sed -e "s|NO_DEFAULT_PATH||g" -i CMakeLists.txt
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DSPIRV_CROSS_{SHARED=OFF,STATIC=ON,CLI=OFF,ENABLE_TESTS=OFF}
+
+# The pkg-config file doesn't have any dependencies linked.
+edit-pc \
+	-p "$AB_PREFIX/lib/pkgconfig/spirv-cross-c.pc" \
+	Libs.private+=-lspirv-cross-{cpp,glsl,hlsl,msl,reflect,util,core}

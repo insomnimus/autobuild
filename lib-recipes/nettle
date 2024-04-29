@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# download_lib nettle nettle.tar.gz lib/libnettle.a nettle-3.9.1
+download nettle lib/libnettle.a
+install_lib gmp
+
+set_env
+
+configure_install \
+	--disable-dependency-tracking \
+	--disable-{openssl,gcov,documentation} \
+	--enable-x86-{aesni,sha-ni,pclmul} \
+	--with-include-path="$AB_PREFIX/include" \
+	--with-lib-path="$AB_PREFIX/lib"

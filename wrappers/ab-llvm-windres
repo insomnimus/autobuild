@@ -1,0 +1,6 @@
+#!/usr/bin/env dash
+
+exec llvm-windres \
+	--target=pe-x86-64 \
+	--include-dir="${AB_MINGW_SYSROOT:-/usr}"/x86_64-w64-mingw32/include \
+	"$@"

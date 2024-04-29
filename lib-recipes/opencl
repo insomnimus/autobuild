@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+download opencl lib/libOpenCL.a
+install_lib opencl-headers
+
+set_env -fno-lto
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DBUILD_TESTING=OFF \
+	-DOPENCL_ICD_LOADER_DISABLE_OPENCLON12=ON \
+	-DOPENCL_ICD_LOADER_HEADERS_DIR="$AB_PREFIX/include"
+
+run ln -sf OpenCL.a "$AB_PREFIX/lib/libOpenCL.a"
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/OpenCL.pc" Libs+="-lcfgmgr32 -lole32"

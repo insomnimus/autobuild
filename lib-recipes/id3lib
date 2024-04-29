@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+download id3lib lib/libid3.a
+install_lib iconv zlib
+msys_install

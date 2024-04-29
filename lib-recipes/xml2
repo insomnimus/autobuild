@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download xml2 lib/libxml2.a
+install_lib iconv xz zlib
+
+set_env
+
+# TODO: enable ICU
+# run_configure ./autogen.sh \
+configure_install_par \
+	--disable-maintainer-mode \
+	--enable-ipv6 \
+	--without-{debug,ftp,history,readline,python} \
+	--with-{gnu-ld,lzma,zlib,iconv="$AB_PREFIX"}

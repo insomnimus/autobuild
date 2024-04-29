@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download tidy lib/libtidy_static.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_CONFIG_FILES=ON \
+	-DSUPPORT_LOCALIZATIONS=OFF \
+	-DTIDY_CONSOLE_SHARED=OFF
+
+out "$AB_PREFIX"/bin/tidy.exe

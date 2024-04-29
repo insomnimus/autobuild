@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+install_lib iconv
+
+set_env -l:lib{iconv,pthread,bcrypt}.a
+
+configure_build_par \
+	--disable-{nls,rpath,i18n,gcc-warnings} \
+	--enable-{threads=posix,year2038} \
+	--with-{packager=autobuild,gnu-ld,libiconv-prefix="$AB_PREFIX"}
+
+out sed/sed.exe

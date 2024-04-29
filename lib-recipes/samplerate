@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+download samplerate lib/libsamplerate.a
+install_lib fftw
+
+set_env
+
+# run autoreconf -fi
+configure_install_par \
+	--enable-{sse2-lrint,fftw} \
+	--disable-{werror,alsa,sndfile} \
+	--with-gnu-ld
+
+# mkcd autobuild
+# cmake_install .. \
+# -DBUILD_TESTING=OFF \
+# -DCPACK_{SOURCE_{ZIP,7Z},BINARY_{ZIP,WIX,NUGET,NSIS,INNOSETUP,IFW,7Z}}=OFF \
+# -DLIBSAMPLERATE_{{ENABLE_SANITIZERS,EXAMPLES}=OFF,{INSTALL,INSTALL_PKGCONFIG_MODULE,SSE2_LRINT}=ON}

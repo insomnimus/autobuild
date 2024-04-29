@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+download aribb24 lib/libaribb24.a
+install_lib png
+
+set_env
+configure_install_par --with-gnu-ld

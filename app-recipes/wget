@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+install_lib iconv unistring psl pcre2 zlib gnutls c-ares
+
+set_env \
+	p:-DSYSTEM_WGETRC='\"C:/ProgramData/wget/wgetrc.ini\"' \
+	p:-DCARES_STATICLIB \
+	p:-D{PCRE2,PSL}_STATIC \
+	x:-Wl,--allow-multiple-definition
+
+export LIBS=-l:libpthread.a
+configure_build_par \
+	--disable-{dependency-tracking,assert,nls,rpath} \
+	--enable-{largefile,year2038,threads=posix,pcre2} \
+	--with-{cares,ssl=gnutls,zlib,libpsl} \
+	--with-{libiconv,libgnutls}-prefix="$AB_PREFIX"
+
+out src/wget.exe

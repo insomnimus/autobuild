@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download placebo lib/libplacebo.a
+install_lib vulkan lcms2 shaderc
+
+set_env
+
+meson_install \
+	-D{vulkan,lcms,shaderc}=enabled \
+	-D{demos,tests,bench,fuzz}=false \
+	-Dxxhash=disabled

@@ -1,0 +1,14 @@
+#!/usr/bin/env dash
+# shellcheck disable=SC2086
+
+case "$AB_RANLIB" in
+"")
+	echo 1>&2 "ab-ranlib: error: \$AB_RANLIB is not set"
+	exit 1
+	;;
+*ab-ranlib*)
+	echo 1>&2 "ab-ranlib: error: \$AB_RANLIB is set to ab-ranlib, causing infinite recursion"
+	exit 1
+	;;
+*) exec $AB_RANLIB "$@" ;;
+esac

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+download bs2b lib/libbs2b.a
+install_lib sndfile
+
+run sed -i 's/dist-lzma/dist-xz/g' configure.ac
+run autoreconf -fi
+cat >src/bs2bconvert.c <<'EOF'
+#include <stdio.h>
+int main() {
+	puts("error: this is a dummy program used to skip linking executables for bs2b");
+	return 1;
+}
+EOF
+
+set_env
+configure_install_par

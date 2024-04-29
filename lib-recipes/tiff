@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download tiff lib/libtiff.a
+install_lib deflate zlib xz zstd lerc webp
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--with-gnu-ld \
+	--disable-{dependency-tracking,maintainer-mode,rpath,tools,tests,contrib,docs,sphinx} \
+	--enable-{zlib,libdeflate,lerc,lzma,zstd,webp,cxx} \
+	--with-gnu-ld

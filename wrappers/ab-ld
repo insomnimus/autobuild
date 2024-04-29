@@ -1,0 +1,12 @@
+#!/usr/bin/env dash
+# shellcheck disable=SC2086
+
+set -f
+case "${AB_LD:-}" in
+*ab-lld*) exec ${AB_LD} "$@" ;;
+*ab-ld*)
+	echo 1>&2 "ab-ld: \$AB_LD is set to ab-ld, causing infinite recursion"
+	exit 1
+	;;
+*) exec ${AB_LD:?} "$@" $AB_LDFLAGS_AFTER ;;
+esac

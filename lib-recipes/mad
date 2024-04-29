@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download mad lib/libmad.a
+
+apply_patches -p1
+touch NEWS AUTHORS ChangeLog
+rm aclocal.m4 Makefile.in
+
+WANT_AUTOMAKE=latest run autoreconf -fi
+
+set_env
+
+# Probably shouldn't use parallel builds as this is from 2004.
+configure_install

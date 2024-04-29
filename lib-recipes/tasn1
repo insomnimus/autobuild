@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+download tasn1 lib/libtasn1.a
+
+set_env
+
+cat >wrap-cc <<-'EOF'
+	#!/usr/bin/env bash
+	args=()
+	for a in "$@"; do
+		if [[ $a != -fsanitize=fuzzer ]]; then
+			args+=("$a")
+		fi
+	done
+	exec $AB_CC "${args[@]}"
+EOF
+
+chmod +x wrap-cc
+export CC="$PWD/wrap-cc"
+
+echo -e 'all:\ninstall:\ndoc:' >fuzz/Makefile.am
+echo -e 'all:\ninstall:\ndoc:' >fuzz/Makefile.in
+
+configure_install_par \
+	--disable-{doc,valgrind-tests,code-coverage,fuzzing} \
+	--enable-year2038 \
+	--with-gnu-ld

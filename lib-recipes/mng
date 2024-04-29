@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# download_lib mng mng.zip lib/libmng.a libmng-2.0.3
+download mng lib/libmng.a
+install_lib zlib
+
+set_env
+
+run autoreconf -fi
+configure_install \
+	--disable-{dependency-tracking,buildso} \
+	--enable-year2038 \
+	--with-gnu-ld \
+	--with-zlib="$AB_PREFIX"
+
+# TODO: Enable lcms2 and lcms? dunno...

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download nghttp3 lib/libnghttp3.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_{SHARED_LIB=OFF,STATIC_LIB=ON,LIB_ONLY=ON}

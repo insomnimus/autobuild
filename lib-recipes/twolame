@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# download_lib twolame twolame.tar.gz lib/libtwolame.a twolame-0.4.0
+download twolame lib/libtwolame.a
+
+set_env gcc:-fno-lto
+
+# The pkg-config file has an error: it capitalizes .private
+sed -ri 's/\s*(Libs|Cflags|Requires)\.Private:/\1.private:/g' twolame.pc.in
+
+# twolame's configure script employs bashisms
+USE_DASH=0 configure_install_par \
+	--disable-{dependency-tracking,maintainer-mode} \
+	--disable-sndfile \
+	--with-gnu-ld

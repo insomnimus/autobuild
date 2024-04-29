@@ -1,0 +1,24 @@
+[constants]
+m = 'x86_64-w64-mingw32-'
+
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'windows'
+cpu_family = 'x86_64'
+cpu = 'sandybridge'
+endian = 'little'
+
+[binaries]
+c = m + 'gcc'
+cpp = m + 'g++'
+ld = m + 'ld'
+ar = m + 'gcc-ar'
+nm = m + 'gcc-nm'
+ranlib = m + 'gcc-ranlib'
+windres = m + 'windres'
+strip = m + 'strip'
+pkgconfig = m + 'pkg-config'
+pkg-config = m + 'pkg-config'
+cmake = 'cmake'

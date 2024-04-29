@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download hidapi lib/libhidapi.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DHIDAPI_{BUILD_HIDTEST,WITH_{HIDRAW,LIBUSB}}=OFF

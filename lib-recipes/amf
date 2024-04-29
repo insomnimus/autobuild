@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+dir="$AB_PREFIX/include/AMF"
+
+download amf include/AMF amf/public/include
+
+run mkdir -p "$dir"
+run cp -fr ./* "$dir"

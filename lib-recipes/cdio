@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download cdio lib/libcdio.a
+install_lib iconv cddb
+
+set_env
+
+configure_install_par \
+	--disable-{cpp-progs,example-progs,rpath} \
+	--disable-vcd-info \
+	--enable-{cxx,largefile} \
+	--without-{cd-drive,cd-info,cd-read,iso-info,iso-read} \
+	--with-{gnu-ld,libiconv-prefix="$AB_PREFIX"} \
+	llvm:--disable-versioned-libs

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Users shouldn't attempt to install this on the command line; it conflicts with ffnvcodec12 (7).
+if [[ $AB_PREFIX == "$AB_ROOT/libraries" ]]; then
+	error "you can't manually install ffnvcodec6; it conflicts with ffnvcodec12 and is only kept because ffmpeg v6 needs this version"
+fi
+
+download ffnvcodec6 include/ffnvcodec/nvEncodeAPI.h
+
+set_env
+
+run make install PREFIX="$AB_PREFIX"

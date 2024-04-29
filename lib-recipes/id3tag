@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download id3tag lib/libid3tag.a
+install_lib zlib
+
+set_env
+
+mkcd autobuild
+cmake_install .. -DBUILD_SHARED_LIBS=OFF

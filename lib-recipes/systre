@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+download systre lib/libregex.a
+install_lib tre
+msys_install

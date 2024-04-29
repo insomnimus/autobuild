@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+download fdk-aac lib/libfdk-aac.a
+
+set_env
+
+configure_install_par --with-gnu-ld

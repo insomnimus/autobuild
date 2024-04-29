@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+download fribidi lib/libfribidi.a
+
+set_env
+
+run_configure ./autogen.sh \
+	--with-gnu-ld \
+	--disable-debug
+
+# How considerate of GNU people to not let you turn off documentation...
+# We don't need it but since we can't turn it off, have to empty doc/Makefile
+echo -e 'all:\ninstall:' >doc/Makefile
+
+run make -j$JOBS
+run make install

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+download openmp lib/libomp.a
+msys_install

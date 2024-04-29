@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+download vmaf lib/libvmaf.a
+
+set_env
+
+cd libvmaf
+
+# Linking the executable sometimes fails but we don't even need it.
+cat >tools/vmaf.c <<-'EOF'
+	#include <stdio.h>
+	int main() {
+		puts("This is a dummy program\n");
+		return 1;
+	}
+EOF
+
+# LDFLAGS+=" $($CXX -print-file-name=libstdc++.a)"
+
+meson_install \
+	-Denable_{tests,docs}=false \
+	-Denable_float=true

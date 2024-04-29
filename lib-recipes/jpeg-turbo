@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download jpeg-turbo lib/libjpeg.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_{STATIC=ON,SHARED=OFF} \
+	-DWITH_{FUZZ,JAVA}=OFF \
+	-DWITH_{SIMD,TURBOJPEG}=ON

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download idn2 lib/libidn2.a
+install_lib iconv unistring
+
+set_env -fno-lto -l:libunistring.a -DIN_LIBUNISTRING -DIDN2_STATIC
+
+# AUTOPOINT=true run autoreconf -fi
+run touch unistring/unistr/unistring-notinline.h
+
+configure_install_par \
+	--enable-{year2038,largefile} \
+	--disable-{valgrind-tests,fuzzing,cfi,ubsan,asan,rpath,nls,code-coverage,gcc-warnings,doc} \
+	--with-{gnu-ld,{libiconv,libunistring}-prefix="$AB_PREFIX"}

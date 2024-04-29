@@ -1,0 +1,25 @@
+#!/usr/bin/env bsah
+
+download mujs lib/libmujs.a
+install_lib readline
+
+set_env
+
+for p in "$PATCHES"/*.patch; do
+	run patch -p1 -i "$p"
+done
+
+# Dummy files so make install works.
+mkdir -p build/release
+touch build/release/{mujs,mujs-pp}
+
+run make install \
+	prefix="$AB_PREFIX" \
+	OPTIM=-O2 \
+	CC="$CC -static $CFLAGS" \
+	AR="$AR" \
+	SO=dll \
+	READLINE_LIBS="-lreadline -ltermcap -lmsvcrt -lucrt"
+
+rm "$AB_PREFIX"/bin/{mujs,mujs-pp}
+out build/release/{mujs,mujs-pp}.exe

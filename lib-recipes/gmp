@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+download gmp lib/libgmp.a
+
+# These are necessary to build on WSL!
+export CC_FOR_BUILD=clang CXX_FOR_BUILD=clang++ CPP_FOR_BUILD="clang -E"
+export CFLAGS_FOR_BUILD="" CXXFLAGS_FOR_BUILD="" CPPFLAGS_FOR_BUILD=""
+
+# run mkdir stash
+# run cp config.{guess,sub} stash
+# run patch -p2 -i "$PATCHES"/do-not-use-dllimport.diff
+# run patch -p1 -i "$PATCHES"/gmp-staticlib.diff
+# run autoreconf -fi
+# run cp -f stash/config.{guess,sub} .
+
+set_env
+configure_install_par \
+	--enable-cxx \
+	--without-readline
+
+# Libraries sometimes have a .lib suffix on clang for some reason, rename them.
+if [[ -e "$AB_PREFIX/lib/gmp.lib" ]]; then
+	run cp -f "$AB_PREFIX/lib/gmp.lib" "$AB_PREFIX/lib/libgmp.a"
+fi

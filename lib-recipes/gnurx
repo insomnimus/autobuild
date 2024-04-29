@@ -1,0 +1,18 @@
+#!/usr/bin/enbv bash
+
+error "use libsystre instead"
+# download_lib gnurx gnurx.tar.gz lib/libregex.a mingw-libgnurx-2.5.1
+download gnurx lib/libregex.a
+
+run patch -Np0 -i "$PATCHES/mingw-w64-libgnurx-honor-destdir.patch"
+run cp -f "$PATCHES/mingw32-libgnurx-configure.ac" configure.ac
+run cp -f "$PATCHES/mingw32-libgnurx-Makefile.am" Makefile.am
+run touch NEWS AUTHORS
+run libtoolize --copy
+run aclocal
+run autoconf
+run automake --add-missing
+
+set_env
+configure_install --with-gnu-ld
+cp -f "$AB_PREFIX/lib/"{libgnurx.a,libregex.a}

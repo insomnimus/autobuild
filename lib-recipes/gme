@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download gme lib/libgme.a
+install_lib zlib
+
+set_env
+
+# There's no cmake option to disable the player and we don't care about it (it wants SDL2).
+run sed -i 's/\s*find_package(SDL2)\s*/set(SDL2_FOUND 0)/gi' player/CMakeLists.txt
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DENABLE_UBSAN=OFF

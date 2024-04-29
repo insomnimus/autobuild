@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download gsm lib/libgsm.a
+
+set_env -I"$PWD/inc" -L"$PWD/lib"
+
+mkdir -p "$AB_PREFIX"/{lib,include/gsm,man/man3}
+run make \
+	CC="$CC" \
+	CFLAGS="-c $CFLAGS" \
+	AR="$AR" \
+	RANLIB="$RANLIB" \
+	INSTALL_ROOT="$AB_PREFIX" \
+	GSM_INSTALL_INC="$AB_PREFIX/include/gsm" \
+	gsminstall

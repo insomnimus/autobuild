@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+download sndfile lib/libsndfile.a
+install_lib flac ogg opus vorbis lame sqlite3
+# TODO: Can also enable speex and mpg123
+set_env -DFLAC__NO_DLL
+
+# run autoreconf -fi
+# configure_install \
+# --disable-{werror,bow-docs,alsa,full-suite,test-coverage} \
+# --enable-year2038 \
+# --with-gnu-ld
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{EXAMPLES,PROGRAMS,REGTEST,SHARED_LIBS,TESTING}=OFF \
+	-DENABLE_{BOW_DOCS,}=OFF \
+	-DENABLE_{EXTERNAL_LIBS,PKG_CONFIG}=ON \
+	-DINSTALL_{MANPAGES=OFF,PKGCONFIG_MODULE=ON}

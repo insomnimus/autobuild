@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# download unistring lib/libunistring.a
+download unistring lib/libunistring.a
+install_lib iconv
+
+set_env
+
+# run ./gitsub.sh pull --depth=1
+# run ./autogen.sh
+
+configure_install_par \
+	--enable-{threads=posix,year2038} \
+	--disable-rpath \
+	--with-{gnu-ld,libiconv-prefix="$AB_PREFIX"}

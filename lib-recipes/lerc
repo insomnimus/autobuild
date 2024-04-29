@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+download lerc lib/liblerc.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. -DBUILD_SHARED_LIBS=OFF

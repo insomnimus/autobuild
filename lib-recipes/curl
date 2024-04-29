@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+download curl lib/libcurl.a
+
+is_winssl=""
+is_libressl=""
+is_gnutls=""
+want_http3=""
+default_ssl=""
+
+{
+	if [[ ! $APP ]]; then
+		CURL_OPT=winssl
+	fi
+
+	case "$CURL_OPT" in
+	winssl)
+		is_winssl=1
+		default_ssl=schannel
+		;;
+	libressl)
+		is_libressl=1
+		default_ssl=openssl
+		;;
+	gnutls)
+		is_gnutls=1
+		default_ssl=gnutls
+		;;
+	libressl+winssl | winssl+libressl)
+		is_winssl=1
+		is_libressl=1
+		default_ssl=openssl
+		;;
+	gnutls_http3)
+		is_gnutls=1
+		default_ssl=gnutls
+		want_http3=1
+		;;
+	all:*)
+		is_winssl=1
+		is_gnutls=1
+		is_libressl=1
+		s="${CURL_OPT#all:}"
+		case "$s" in
+		winssl) default_ssl=schannel ;;
+		libressl) default_ssl=openssl ;;
+		gnutls) default_ssl=gnutls ;;
+		*) error "unknown ssl backend: $s" ;;
+		esac
+		;;
+	all) error "you must specify a default TLS backend; options are all:winssl, all:libressl and all:gnutls" ;;
+	*)
+		error "unknown curl build option: $CURL_OPT; accepted options are winssl, libressl, gnutls, gnutls_http3, winssl+libressl, all:winssl, all:libressl, all:gnutls"
+		;;
+	esac
+}
+
+install_lib \
+	iconv brotli zlib zstd \
+	c-ares psl idn2 \
+	app:ssh2
+
+flags=(
+	# Set these to off by default, we'll enable them later.
+	--without-{libssh2,openssl,schannel,gnutls,nghttp2,ngtcp2,nghttp3}
+	--enable-{ares,ipv6,threaded-resolver}
+	--disable-{manual,code-coverage,maintainer-mode}
+	--without-{ca-path,ca-bundle}
+	--with-{libpsl,libidn2,zlib,zstd,brotli="$AB_PREFIX"}
+	app:--with-libssh2
+	--with-default-ssl-backend="$default_ssl"
+)
+libraries=()
+
+{
+	if [[ $is_winssl ]]; then
+		flags+=(--with-schannel --with-nghttp2)
+		install_lib nghttp2
+	fi
+
+	if [[ $is_libressl ]]; then
+		install_lib libressl nghttp2
+		flags+=(--with-{openssl,nghttp2})
+	fi
+
+	if [[ $is_gnutls ]]; then
+		install_lib gnutls nghttp2 ngtcp2
+		flags+=(--with-{gnutls,nghttp2,ngtcp2})
+		libraries+=(-l:lib{nghttp2,ngtcp2,gnutls,hogweed,nettle,gmp,tasn1}.a)
+		if [[ $want_http3 ]]; then
+			install_lib nghttp3
+			flags+=(--with-nghttp3)
+			# libraries+=(-l:libnghttp3.a)
+		fi
+	fi
+}
+
+libraries+=(
+	-l:lib{psl,idn2,unistring}.a
+	-l:lib{brotlienc,brotlidec,brotlicommon,iconv}.a
+	# iphlpapi is required by c-ares
+	-l:lib{iphlpapi,bcrypt,ncrypt,pthread,crypt32}.a
+	-l:libz.a
+)
+
+set_env \
+	p:-D{CARES,NGHTTP2,NGTCP2,NGHTTP3}_STATICLIB \
+	p:-DPSL_STATIC \
+	$(
+		if [[ $is_gnutls ]]; then
+			echo x:-Wl,--allow-multiple-definition
+		fi
+	)
+
+export LIBS="${libraries[*]}"
+
+configure_build_par "${flags[@]}"
+
+# Don't install on app mode.
+if [[ ! $APP ]]; then
+	run make install
+	exit 0
+fi
+
+# Download CA certificates (required if using something other than schannel)
+if [[ $is_gnutls || $is_libressl ]]; then
+	info "Downloading CA Certificate bundle"
+	# run wget -qO curl-ca-bundle.crt https://curl.se/ca/cacert.pem
+	run ab-helper dl -O curl-ca-bundle.crt https://curl.se/ca/cacert.pem
+	out src/curl.exe curl-ca-bundle.crt
+else
+	out src/curl.exe
+fi
+# Also prevent creation of the library install record.
+LIB_ID=""

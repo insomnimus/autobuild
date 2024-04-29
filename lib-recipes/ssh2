@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+download ssh2 lib/libssh2.a
+install_lib zlib
+# Optional: gcrypt
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{EXAMPLES,TESTING}=OFF \
+	-DCRYPTO_BACKEND=WinCNG \
+	-DENABLE_{DEBUG_LOGGING=OFF,WERROR=OFF,ZLIB_COMPRESSION=ON} \
+	-DLINT=OFF \
+	-DRUN_{DOCKER,SSHD}_TESTS=OFF

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download ilbc lib/libilbc.a
+
+set_env
+export AB_CFLAGS=-l:libpthread.a
+
+mkcd autobuild
+cmake_install .. -DBUILD_SHARED_LIBS=OFF

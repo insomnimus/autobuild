@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+download spirv-tools lib/libSPIRV-Tools.a
+install_lib spirv-headers
+
+set_env -l:libpthread.a
+
+mkcd autobuild
+cmake_install .. \
+	-DSPIRV_WERROR=OFF \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DSPIRV_TOOLS_BUILD_STATIC=ON \
+	-DSPIRV_SKIP_{EXECUTABLES,TESTS}=ON \
+	-DSPIRV-Headers_SOURCE_DIR="$AB_PREFIX"
+
+# if [[ -e "$AB_PREFIX/bin/libSPIRV-Tools-shared.dll" ]]; then
+# rm -f -- "$AB_PREFIX/bin/libSPIRV-Tools-shared.dll"
+# fi

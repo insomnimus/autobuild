@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download xxhash lib/libxxhash.a
+
+set_env -DXXH_DEBUGLEVEL=0
+
+# Because you cannot possibly want to make install for Windows... (It fails because the executable is xxhsum.exe)
+touch xxhsum
+
+run make install \
+	OS=Windows \
+	PREFIX="$AB_PREFIX" \
+	NM="$NM"

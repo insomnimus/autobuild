@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+download ffnvcodec include/ffnvcodec/nvEncodeAPI.h
+
+set_env
+
+run make install PREFIX="$AB_PREFIX"

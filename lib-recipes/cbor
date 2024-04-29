@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download cbor lib/libcbor.a
+
+install_lib cjson
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF,TESTING=OFF} \
+	-DWITH_{EXAMPLES,TESTS}=OFF

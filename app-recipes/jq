@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set_env
+
+run autoreconf -fi
+configure_build_par \
+	--disable-{maintainer-mode,fast-install,valgrind,gcov,docs} \
+	--enable-{all-static,decnum,year2038} \
+	--with-gnu-ld \
+	--with-oniguruma=builtin
+
+out jq.exe

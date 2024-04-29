@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download openjpeg lib/libopenjp2.a
+install_lib tiff
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{CODEC,DOC,TESTING,THIRDPARTY,UNIT_TESTS}=OFF \
+	-DBUILD_PKGCONFIG_FILES=ON

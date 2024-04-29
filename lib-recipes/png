@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download png lib/libpng.a
+
+install_lib zlib
+
+set_env
+
+# run autoreconf -fi
+configure_install_par \
+	--with-gnu-ld \
+	--disable-maintainer-mode \
+	--disable-{tests,tools,werror} \
+	--enable-hardware-optimizations=yes

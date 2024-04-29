@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download speex lib/libspeex.a
+
+run ./autogen.sh
+
+set_env
+
+configure_install_par \
+	--disable-{maintainer-mode,dependency-tracking,valgrind,binaries} \
+	--enable-sse \
+	--with-gnu-ld

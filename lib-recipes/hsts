@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download hsts lib/libhsts.a
+install_lib iconv
+
+set_env
+
+configure_install_par \
+	--disable-doc \
+	--without-hsts-distfile

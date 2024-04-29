@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+download instpatch lib/libinstpatch-2.a
+install_lib sndfile glib
+
+set_env llvm:x:--ld-path="$AB_WRAPPERS/ab-lld" -DFLAC__NO_DLL -l:libvorbisenc.a
+
+append_pkgconfig sndfile flac ogg opus vorbis gobject-2.0 glib-2.0
+export AB_LDFLAGS="$LDFLAGS $AB_PREFIX/lib/libFLAC.a"
+export AB_CFLAGS="$CFLAGS"
+
+mkcd autobuild
+cmake_install .. \
+	-DLIB_INSTALL_DIR=lib \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DGTKDOC_ENABLED=OFF \
+	-Denable-debug=OFF

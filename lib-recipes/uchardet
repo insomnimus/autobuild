@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download uchardet lib/libuchardet.a
+
+set_env -l:libpthread.a
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS=OFF,STATIC=ON,BINARY=OFF}

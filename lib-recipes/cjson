@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download cjson lib/libcjson.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DCJSON_BUILD_SHARED_LIBS=OFF \
+	-DENABLE_{CJSON_{TEST,UNINSTALL},FUZZING,HIDDEN_SYMBOLS}=OFF

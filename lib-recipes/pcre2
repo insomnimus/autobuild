@@ -1,0 +1,14 @@
+#!/usr/lib/env bash
+
+download pcre2 lib/libpcre2-posix.a
+# Warning: If these libraries are not available, cmake wants to get them from /usr/
+install_lib iconv zlib bzip2
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DPCRE2_BUILD_{TESTS=OFF,PCRE2GREP=OFF,PCRE2_{8,16}=ON} \
+	-DPCRE2_NEWLINE=ANYCRLF \
+	-DPCRE2_SUPPORT_{JIT,UNICODE}=ON

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download opusfile lib/libopusfile.a
+install_lib ogg opus
+
+set_env
+
+# To get up to date configure
+run autoreconf -fi
+configure_install_par \
+	--disable-{maintainer-mode,doc,http}

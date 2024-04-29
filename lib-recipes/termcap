@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+download termcap lib/libtermcap.a
+msys_install

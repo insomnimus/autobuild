@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+download fluidsynth lib/libfluidsynth.a
+# NOTE: Do not enable sdl2; it makes fluidsynth a windows gui program, which is dysfunctional.
+install_lib sndfile glib instpatch readline
+
+set_env \
+	-DFLAC__NO_DLL
+# -l:lib{readline,termcap}.a
+
+append_pkgconfig readline
+
+mkcd autobuild
+cmake_install .. \
+	-DWIN32_EXECUTABLE=OFF \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DDEFAULT_SOUNDFONT=X:/soundfonts/default.sf2 \
+	-DLIB_SUFFIX="" \
+	-DInstPatch_LIBRARY="$AB_PREFIX/lib/libinstpatch-2.a" \
+	-Denable-{aufile,dsound,libsndfile,openmp,threads,wasapi,waveout,winmidi,readline}=ON \
+	-Denable-sdl2=OFF \
+	-Denable-{coverage,fpe-check,profiling,trap-on-fpe,ubsan}=OFF
+
+# -D_glib2_config_header="$AB_PREFIX/lib/glib-2.0/include" \
+# -DGLib2_INCLUDE_DIR="$AB_PREFIX/include/glib-2.0" \
+# -DGLib2_glib-2_LIBRARY="$AB_PREFIX/lib/libglib-2.0.a" \
+# -DGLib2_gthread-2_LIBRARY="$AB_PREFIX/lib/libgthread-2.0.a" \
+# -D_sndfile_library="$AB_PREFIX/lib/libsndfile.a" \
+# -DSndFile_INCLUDE_DIR="$AB_PREFIX/include"
+
+out "$AB_PREFIX/bin/fluidsynth.exe"

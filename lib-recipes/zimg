@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download zimg lib/libzimg.a
+
+set_env
+
+run ./autogen.sh
+
+configure_install_par \
+	--disable-{dependency-tracking,testapp,example,unit-test,debug} \
+	--with-gnu-ld

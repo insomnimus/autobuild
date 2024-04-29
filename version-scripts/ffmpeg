@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# git checkout --quiet n6.1.1
+# echo n6.1.1
+
+output="$(git tag --list --sort=-taggerdate)"
+
+while read -r s; do
+	if [[ $s != *-dev ]]; then
+		git checkout --quiet "$s"
+		printf '%s\n' "$s"
+		exit 0
+	fi
+done <<<"$output"

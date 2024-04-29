@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+download flac lib/libFLAC.a
+install_lib ogg
+
+set_env gcc:-fno-lto -DFLAC__NO_DLL
+
+mkcd autobuild
+cmake_install .. \
+	-DINSTALL_MANPAGES=OFF \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{DOCS,EXAMPLES,TESTING,UTILS}=OFF \
+	app:-DBUILD_PROGRAMS=ON \
+	lib:-DBUILD_PROGRAMS=OFF \
+	-DENABLE_{64_BIT_WORDS,MULTITHREADING}=ON \
+	-DWITH_OGG=ON \
+	-DOGG_INCLUDE_DIR="$AB_PREFIX/include" \
+	-DOGG_LIBRARY="$AB_PREFIX/lib/libogg.a"
+
+out "$AB_PREFIX/bin/"{flac,metaflac}.exe

@@ -1,0 +1,14 @@
+#!/usr/bin/env dash
+# shellcheck disable=SC2086
+
+case "$AB_WINDRES" in
+"")
+	echo 1>&2 "ab-windres: error: \$AB_WINDRES is not set"
+	exit 1
+	;;
+*ab-windres*)
+	echo 1>&2 "ab-windres: error: \$AB_WINDRES is set to ab-windres, causing infinite recursion"
+	exit 1
+	;;
+*) exec $AB_WINDRES "$@" ;;
+esac

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+download aom lib/libaom.a
+
+set_env
+
+run mkdir -p autobuild
+run cd autobuild
+
+cmake_install .. \
+	-DAOM_BUILD_CMAKE_TOOLCHAINS_X86_64_MINGW_GCC_CMAKE_=1 \
+	-DCONFIG_DEBUG=0 \
+	-DCONFIG_GCC=1 \
+	-D{BUILD_SHARED_LIBS,CONFIG_SHARED}=0 \
+	-DENABLE_CCACHE=ON \
+	-DSTATIC_LINK_JXL=1 \
+	-DENABLE_{DOCS,EXAMPLES,TESTDATA,TESTS,TOOLS}=OFF

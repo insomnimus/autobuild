@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+install_lib \
+	iconv zlib xz bzip2 brotli zstd \
+	gnutls idn2 psl nghttp2 pcre2 hsts
+
+apply_patches -p1
+
+set_env \
+	p:-D{NGHTTP2_STATICLIB,{PCRE2,PSL}_STATIC} \
+	link:-lbrotlicommon \
+	link:-Wl,-Bstatic,--whole-archive \
+	link:-lwinpthread \
+	link:-Wl,--no-whole-archive
+
+CFLAGS+=" -Wno-implicit-function-declaration" configure_build_par \
+	--disable-doc \
+	--enable-{year2038,threads=windows} \
+	--without-gpgme \
+	--with-ssl=gnutls \
+	--with-{libhsts,libpsl,nghttp2,bzip2,zlib,lzma,brotlidec,zstd,libidn2,libpcre2}
+
+out src/wget2.exe

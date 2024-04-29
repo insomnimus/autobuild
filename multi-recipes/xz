@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+download xz lib/liblzma.a
+install_lib iconv
+
+set_env
+unset CPPFLAGS # otherwise configure wants to pass the flags to windres, which fails
+
+export LIBS=-liconv
+
+run autoreconf -fi
+configure_install \
+	--disable-{scripts,doc,nls,rpath} \
+	lib:--disable-{xz,xzdec,lzmadec,lzmainfo}
+
+out "$AB_PREFIX/bin/"{lzmadec,lzmainfo,xzdec,xz}.exe

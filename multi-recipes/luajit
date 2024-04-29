@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+download luajit lib/libluajit.a
+install_lib iconv
+
+set_env x:{-mthreads,-municode}
+export -n CC CXX CPP LD AR \
+	{C,CXX,CPP,LD}FLAGS
+
+run make -j$JOBS amalg \
+	TARGET_SYS=Windows \
+	PREFIX="$AB_PREFIX" \
+	HOST_CC=clang \
+	HOST_CFLAGS="-O1 -g0 -w" \
+	TARGET_CFLAGS="$CFLAGS" \
+	TARGET_LDFLAGS="-O1 ${AB_GCC_LIBS[*]}" \
+	CROSS=ab- \
+	XCFLAGS=-DLUAJIT_ENABLE_GC64 \
+	BUILDMODE=static \
+	INSTALL_DEP=src/luajit.exe FILE_T=luajit.exe
+
+run sed -ri 's/\s\-ldl(\s|$)//g' ./etc/luajit.pc
+run make install PREFIX="$AB_PREFIX" INSTALL_DEP=src/luajit.exe FILE_T=luajit.exe
+run ln -fs libluajit-5.1.a "$AB_PREFIX/lib/libluajit.a"
+run cp "$AB_PREFIX"/lib/pkgconfig/{luajit.pc,lua5.1.pc}
+
+if [[ $APP ]]; then
+	shopt -s nullglob
+	run mkdir -p lj/{include,lua}
+	run cp src/jit/*.lua lj/lua/
+	run cp src/{libluajit.a,*.exe,*.dll} lj/
+	run cp src/{lauxlib.h,lua.h,lua.hpp,luaconf.h,luajit.h,lualib.h} lj/include/
+
+	out lj/*
+fi

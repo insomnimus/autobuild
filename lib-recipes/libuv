@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download libuv lib/libuv.a
+
+set_env x:-fno-strict-aliasing
+
+run ./autogen.sh
+configure_install_par \
+	--disable-maintainer-mode \
+	--enable-{year2038,largefile} \
+	--with-gnu-ld

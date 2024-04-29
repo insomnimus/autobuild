@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+download glslang lib/libglslang.a
+install_lib spirv-tools
+
+set_env
+
+apply_patches -Np1
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DENABLE_{HLSL,OPT}=ON \
+	-DENABLE_GLSLANG_BINARIES=OFF \
+	-DGLSLANG_TESTS=OFF \
+	-DBUILD_EXTERNAL=OFF \
+	-DALLOW_EXTERNAL_SPIRV_TOOLS=ON \
+	-DSPIRV-Tools_DIR="$AB_PREFIX/lib/cmake/SPIRV-Tools" \
+	-DSPIRV-Tools-opt_DIR="$AB_PREFIX/lib/cmake/SPIRV-Tools-opt"

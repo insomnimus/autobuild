@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+install_lib \
+	iconv uchardet vulkan placebo \
+	luajit zlib ass bluray \
+	zimg archive sdl2 \
+	cdio-paranoia lcms2 mujs \
+	caca jpeg-turbo shaderc spirv-cross
+
+ffmpeg_prefix="$AB_OPT/ffmpeg6_decoders"
+FFMPEG=decoders AB_PREFIX="$ffmpeg_prefix" install_lib ffmpeg6
+
+# It wants to link with spirv-cross dynamically.
+sed -i "s/dependency('spirv\\-cross\\-c\\-shared'/dependency('spirv-cross-c'/g" meson.build
+
+set_env \
+	-DLIBARCHIVE_STATIC \
+	link:"$AB_PREFIX/lib/libiconv.a" \
+	llvm:x:--ld-path="$AB_WRAPPERS/ab-lld"
+
+prepend_custom_prefix "$ffmpeg_prefix"
+
+# Because meson is terrible...
+export AB_CFLAGS_BEFORE="$CFLAGS" AB_CXXFLAGS_BEFORE="$CXXFLAGS"
+AB_LDFLAGS_AFTER="$(ab-pkg-config --static --libs OpenCL)"
+export AB_LDFLAGS_AFTER
+
+meson_build \
+	-Dlua=luajit \
+	-D{libarchive,uchardet,iconv,libavdevice,libbluray,zimg,zlib,wasapi}=enabled \
+	-D{cdda,lcms2,sdl2,javascript}=enabled \
+	-D{caca,jpeg,shaderc,spirv-cross}=enabled \
+	-Drubberband=disabled \
+	-D{html,manpage,pdf}-build=disabled
+
+out autobuild/{mpv.exe,mpv.com}

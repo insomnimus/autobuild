@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# bittorrent, json-rpc: nettle + gmp
+# metalink, xml-rpc: xml2
+# async-dns: c-ares
+# firefox cookies: sqlite3
+# sftp: ssh2
+install_lib iconv zlib xml2 gmp nettle c-ares sqlite3 ssh2
+
+set_env \
+	x:-fno-strict-aliasing \
+	-DCARES_STATICLIB \
+	-DLIBXML_STATIC
+
+run autoreconf -fi
+configure_build_par \
+	ARIA2_STATIC=yes \
+	--disable-{libaria2,werror,nls,rpath} \
+	--enable-{ssl,bittorrent,metalink,websocket,year2038} \
+	--with-{wintls,libnettle,libgmp,sqlite3,libxml2,libcares,libz,libssh2} \
+	--with-libiconv-prefix="$AB_PREFIX"
+
+out src/aria2c.exe

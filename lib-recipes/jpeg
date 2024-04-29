@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+error "jpeg isn't what you want, use jpeg-turbo"
+# download_lib jpeg jpeg.zip lib/libjpeg.a jpeg-9e
+download jpeg lib/libjpeg.a
+
+set_env
+
+run autoreconf -fi
+configure_install \
+	--disable-{maintainer-mode,dependency-tracking} \
+	--with-gnu-ld \
+	CC="$CC" CFLAGS="$CFLAGS"

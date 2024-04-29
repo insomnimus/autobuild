@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+download cddb lib/libcddb.a
+install_lib iconv systre
+
+set_env
+append_pkgconfig tre
+if [[ $AB_TOOLCHAIN == gcc ]]; then
+	AB_LDFLAGS_AFTER="$(ab-pkg-config --static --libs tre)"
+	export AB_LDFLAGS_AFTER
+fi
+
+for p in "$PATCHES"/*.patch; do
+	run patch -p1 -i "$p"
+done
+
+WANT_AUTOMAKE=latest run autoreconf -fi
+configure_install_par \
+	--disable-{maintainer-mode,rpath} \
+	--without-cdio \
+	--with-{iconv,gnu-ld,libiconv-prefix="$AB_PREFIX"}

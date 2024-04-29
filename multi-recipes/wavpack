@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download wavpack lib/libwavpack.a
+install_lib app:iconv
+
+set_env
+configure_install_par \
+	app:--enable-apps lib:--disable-apps \
+	--disable-rpath \
+	--with-libiconv-prefix="$AB_PREFIX"
+
+out "$AB_PREFIX"/bin/{wavpack,wvgain,wvtag,wvunpack}.exe

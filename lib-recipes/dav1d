@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+download dav1d lib/libdav1d.a
+
+set_env
+
+mkcd autobuild
+
+run meson setup .. \
+	--cross-file "$AB_MESON" \
+	--prefix "$AB_PREFIX" \
+	--buildtype plain \
+	--default-library static \
+	-Ddebug=false \
+	--unity on \
+	--prefer-static \
+	-Dbitdepths=8,16 \
+	-Denable_{tools,examples,tests,docs}=false
+
+run ninja
+run ninja install

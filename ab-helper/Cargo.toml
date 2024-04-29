@@ -1,0 +1,26 @@
+[package]
+name = "ab-helper"
+version = "0.6.2"
+edition = "2021"
+
+[profile.release]
+strip = "symbols"
+opt-level = 2
+panic = "abort"
+lto = "thin"
+
+[dependencies]
+anyhow = "1.0.81"
+clap = { version = "4.5.3", features = ["derive"] }
+globset = "0.4.14"
+goblin = { version = "0.8.0", default-features = false, features = ["pe32", "pe64", "endian_fd"] }
+headless_chrome = "1.0.9"
+jwalk = "0.8.1"
+kuchikiki = "0.8.4-speedreader"
+log = "0.4.21"
+rand = "0.8.5"
+regex = "1.10.4"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+ureq = { version = "2.9.6", features = ["charset"] }
+url = "2.5.0"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+current="$(latest_git_tag)"
+current="${current%.ROLLING}"
+if [[ $current =~ ^v?[0-9]+\.[0-9]+$ ]]; then
+	current="$current.0"
+fi
+
+since_last="$(git rev-list --count HEAD)"
+if [[ $since_last == 0 ]]; then
+	printf %s "$current"
+else
+	printf %s "$current-r$since_last"
+fi

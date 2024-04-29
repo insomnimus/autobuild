@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+install_lib iconv ogg vorbis
+# For ogg123
+# install_lib ao curl flac speex
+# For oggenc
+install_lib flac # kate
+
+set_env \
+	-DFLAC__NO_DLL \
+	-Wno-{int-conversion,implicit-function-declaration}
+
+export LIBS="-l:libiconv.a"
+run_configure ./configure \
+	--disable-{maintainer-mode,nls,rpath,oggtest,vorbistest,curltest} \
+	--disable-ogg123 \
+	--enable-{threads=win32,year2038} \
+	--with-libiconv-prefix="$AB_PREFIX" \
+	--with-flac
+
+run make -j$JOBS
+
+out {oggdec/oggdec,oggenc/oggenc,ogginfo/ogginfo,vcut/vcut,vorbiscomment/vorbiscomment}.exe

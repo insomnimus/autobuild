@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+download freetype lib/libfreetype.a
+install_lib png bzip2 zlib brotli
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DFT_DISABLE_{BROTLI,BZIP2,PNG}=OFF \
+	-DFT_DISABLE_HARFBUZZ=ON \
+	-DFT_REQUIRE_{BZIP2,PNG,ZLIB}=ON \
+	-DFT_REQUIRE_HARFBUZZ=OFF \
+	-DFT_ENABLE_ERROR_STRINGS=ON \
+	-D{PNG_PNG,ZLIB,BZIP2,BROTLIDEC}_INCLUDE_DIR="$AB_PREFIX/include" \
+	-DBROTLIDEC_LIBRARIES="brotlidec brotlicommon" \
+	-DPNG_LIBRARY=png \
+	-DZLIB_LIBRARY=z \
+	-DBZIP2_LIBRARIES=bz2

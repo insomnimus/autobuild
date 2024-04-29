@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+need_exec gperf
+# TODO: Fix meson build because the autotools one does not let you disable building programs.
+
+download fontconfig lib/libfontconfig.a
+install_lib iconv expat freetype # xml2
+
+set_env
+append_pkgconfig freetype2
+
+configure_install_par \
+	--disable-{libxml2,nls,rpath,docbook,docs,cache-build} \
+	--enable-iconv \
+	--with-libiconv-prefix="$AB_PREFIX"
+
+# meson_install \
+# --wrap-mode=nodownload \
+# -D{doc,tests,tools,cache-build}=disabled \
+# -Diconv=enabled

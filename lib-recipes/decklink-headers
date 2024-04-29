@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+download decklink-headers include/DeckLinkAPI.h
+run make install PREFIX="$AB_PREFIX"

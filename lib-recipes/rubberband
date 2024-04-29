@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download rubberband lib/librubberband.a
+install_lib fftw samplerate
+
+set_env
+
+meson_install \
+	-Dextra_include_dirs="$AB_PREFIX/include" \
+	-Dextra_lib_dirs="$AB_PREFIX/lib" \
+	-Dauto_features=disabled \
+	-Dfft=fftw \
+	-Dresampler=libsamplerate
+
+# -D{jni,ladspa,lv2,vamp,cmdline,tests}=disabled

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download nghttp2 lib/libnghttp2.a
+
+set_env p:-D{LIBXML_STATIC,NGHTTP2_STATICLIB}
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS=OFF,STATIC_LIBS=ON} \
+	-DENABLE_DEBUG=OFF \
+	-DWITH_{JEMALLOC,LIBXML2}=OFF \
+	-DENABLE_LIB_ONLY=ON

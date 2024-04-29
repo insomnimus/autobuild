@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download cdio-paranoia lib/libcdio_paranoia.a
+install_lib cdio
+
+set_env
+
+# autoreconf to get updated libtool files with clang support
+run autoreconf -fi
+
+configure_install_par \
+	--disable-{maintainer-mode,example-progs,cpp-progs} \
+	llvm:--disable-ld-version-script

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download dlfcn lib/libdl.a
+
+# LTO's probably not helpful here.
+set_env {x,link}:-fno-lto
+
+mkcd autobuild
+cmake_install .. -DBUILD_{SHARED_LIBS,TESTS}=OFF

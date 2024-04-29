@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+download psl lib/libpsl.a
+install_lib iconv idn2
+
+cat >wrap-ld <<-'EOF'
+	#!/usr/bin/env bash
+	for a in "$@"; do
+		if [[ $a == *fuzz*.exe ]]; then
+			$AB_LD "$@"
+			exit 0
+		fi
+	done
+	exec $AB_LD "$@"
+EOF
+chmod +x wrap-ld
+
+set_env llvm:x:--ld-path="$PWD/wrap-ld"
+export LD="$PWD/wrap-ld"
+
+run ./autogen.sh
+configure_install_par \
+	--disable-{nls,rpath,man,fuzzing} \
+	--enable-{runtime=libidn2,builtin,year2038} \
+	--with-{gnu-ld,libiconv-prefix="$AB_PREFIX"}

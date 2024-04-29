@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download c-ares lib/libcares.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DCARES_{STATIC=ON,SHARED=OFF,THREADS=ON,INSTALL=ON} \
+	-DCARES_BUILD_{TESTS,CONTAINER_TESTS,TOOLS}=OFF
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/libcares.pc" \
+	Libs+=-liphlpapi \
+	Cflags.private+=-DCARES_STATICLIB

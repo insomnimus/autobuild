@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download opus lib/libopus.a
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--with-gnu-ld \
+	--enable-{custom-modes,asm,rtcd,intrinsics,float-api} \
+	--disable-{fixed-point,assertions,fuzzing,doc,extra-programs}

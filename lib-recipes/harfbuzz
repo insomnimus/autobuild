@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# need_exec ragel
+
+download harfbuzz lib/libharfbuzz.a
+install_lib freetype
+
+set_env
+
+meson_install \
+	--wrap-mode=nodownload \
+	-Ddebug=false \
+	-D{glib,gobject,cairo,chafa,icu,graphite2}=disabled \
+	-Dfreetype=enabled \
+	-D{tests,introspection,docs,utilities,benchmark}=disabled \
+	-Ddoc_tests=false \
+	-Dgdi=enabled
+# -Dragel_subproject=true

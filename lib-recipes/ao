@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download ao lib/libao.a
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--disable-pulse \
+	--with-gnu-ld \
+	--disable-maintainer-mode

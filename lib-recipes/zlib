@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+download zlib lib/libz.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_GMOCK=OFF \
+	-DINSTALL_{GTEST,UTILS}=OFF \
+	-DWITH_{BENCHMARKS,CODE_COVERAGE,FUZZERS,GTEST}=OFF \
+	-D{ZLIBNG,ZLIB}_ENABLE_TESTS=OFF \
+	-DZLIB_COMPAT=ON
+
+### Mark Adler's zlib ###
+# Note: This isn't a standard configure script.
+# prefix="$AB_PREFIX" run ./configure \
+# --static --64 \
+# --prefix="$AB_PREFIX"
+
+# run make
+# run make install prefix="$AB_PREFIX"

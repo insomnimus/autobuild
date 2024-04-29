@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download uuid lib/libuuid.a
+
+set_env
+
+run autoreconf -fi
+configure_install_par \
+	--disable-dependency-tracking \
+	--with-gnu-ld

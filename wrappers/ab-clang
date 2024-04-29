@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2086
+
+# Disable globbing
+set -f
+
+args=()
+for a in "$@"; do
+	case "$a" in
+	# Some projects hardcode -O3 but it's got little to no gains.
+	-O3) args+=(-O2) ;;
+	-I/usr/include | -L/usr/lib | -L/lib | -L/lib/)
+		if [ "${AB_IGNORE_SYSTEM_PATHS:-}" = 1 ]; then
+			echo 1>&2 "ab-clang: warning: attempted to use headers/libraries from build machine: $a"
+		else
+			echo 1>&2 "ab-clang: error: attempted to use headers/libraries from build machine: $a"
+			echo 1>&2 "invocation:"
+			printf 1>&2 '%s\n' "$*"
+			exit 1
+		fi
+		;;
+	*) args+=("$a") ;;
+	esac
+done
+
+sysroot=""
+if [ -n "${AB_MINGW_SYSROOT:-}" ]; then
+	sysroot="--sysroot=$AB_MINGW_SYSROOT"
+fi
+
+exec clang \
+	--target=x86_64-w64-mingw32 \
+	-fuse-ld=lld \
+	"$sysroot" \
+	$AB_CFLAGS_BEFORE \
+	"${args[@]}" \
+	$AB_CFLAGS

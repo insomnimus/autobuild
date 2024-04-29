@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+download tcl lib/libtcl86.a
+install_lib zlib
+
+apply_patches -Np1
+cp unix/tcl.pc.in win/tcl.pc.in
+
+run cd win
+run autoreconf -fi
+
+set_env
+
+configure_install_par \
+	--enable-{threads,64bit=amd64}
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/tcl.pc" Libs+=-l{ws2_32,netapi32,user32,userenv}

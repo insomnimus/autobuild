@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+download theora lib/libtheora.a
+install_lib ogg
+
+set_env
+
+# Note: autogen.sh calls configure for some reason.
+run_configure autogen.sh \
+	--disable-{dependency-tracking,doc,valgrind-testing,oggtest,vorbistest,telemetry,examples} \
+	--with-{gnu-ld,ogg="$AB_PREFIX"} \
+	llvm:--disable-asm
+
+run make -j$JOBS
+run make install

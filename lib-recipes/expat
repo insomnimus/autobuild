@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+download expat lib/libexpat.a
+
+set_env
+configure_install_par

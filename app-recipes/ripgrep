@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+export TARGET_CFLAGS="-flto"
+export PCRE2_SYS_STATIC=1
+export RUSTFLAGS="-Clinker-plugin-lto"
+
+cargo_build --bin=rg --features=pcre2 --profile=release-lto
+out target/x86_64-pc-windows-gnu/release-lto/rg.exe

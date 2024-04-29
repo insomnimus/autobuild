@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+download vulkan lib/libvulkan-1.dll.a
+install_lib vulkan-headers
+
+set_env \
+	-fno-lto \
+	-D__STDC_FORMAT_MACROS \
+	cxx:{-D__USE_MINGW_ANSI_STDIO,-fpermissive} \
+	-Wno-unused-function
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{TESTS,WERROR}=OFF \
+	-DUPDATE_DEPS=ON \
+	-DUSE_MASM=OFF \
+	-DENABLE_WERROR=OFF

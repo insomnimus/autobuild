@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download brotli lib/libbrotlidec.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	lib:-DBROTLI_BUILD_TOOLS=OFF \
+	app:-DBROTLI_BUILD_TOOLS=ON \
+	-DBUILD_{SHARED_LIBS,TESTING}=OFF \
+	-DCMAKE_INSTALL_MANDIR="$AB_PREFIX/share/man"
+
+out "$AB_PREFIX/bin/brotli.exe"

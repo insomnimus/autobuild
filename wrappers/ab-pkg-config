@@ -1,0 +1,4 @@
+#!/usr/bin/env dash
+
+set -u
+exec x86_64-w64-mingw32-pkg-config "$@"

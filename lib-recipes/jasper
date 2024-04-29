@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download jasper lib/libjasper.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DALLOW_IN_SOURCE_BUILD=ON \
+	-DBUILD_TESTING=OFF \
+	-DJAS_ENABLE_{SHARED,32BIT,CONFORMANCE_TESTS,DOC,LATEX,PROGRAMS,STRICT}=OFF \
+	-DJAS_PREFER_PTHREAD=ON
+
+# TODO: JAS_ENABLE_OPENGL, build opengl

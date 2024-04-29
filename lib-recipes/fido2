@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+download fido2 lib/libfido2.a
+install_lib hidapi libressl zlib cbor
+
+set_env
+# _libs=" -lcrypto -lcrypt32"
+# CFLAGS+="$_libs"
+# CXXFLAGS+="$_libs"
+# LDFLAGS+="$_libs"
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF} \
+	-DBUILD_{EXAMPLES,MANPAGES,TOOLS}=OFF \
+	-DUSE_HIDAPI=ON \
+	-DCRYPTO_LIBRARIES="crypto -lcrypt32" \
+	-D{CBOR,ZLIB,CRYPTO}_INCLUDE_DIRS="$AB_PREFIX/include" \
+	-D{CBOR,ZLIB,CRYPTO}_LIBRARY_DIRS="$AB_PREFIX/lib" \
+	-DUSE_WINHELLO=OFF

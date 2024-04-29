@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download ngtcp2 lib/libngtcp2.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_{DEBUG=OFF,SHARED_LIB=OFF,STATIC_LIB=ON} \
+	-DENABLE_{BORINGSSL,GNUTLS,JEMALLOC,OPENSSL,PICOTLS,WOLFSSL}=OFF

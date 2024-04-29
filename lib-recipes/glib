@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download glib lib/libglib-2.0.a
+install_lib iconv zlib libffi pcre2
+
+set_env
+
+meson_install \
+	-D{man,dtrace,documentation,tests,installed_tests,multiarch}=false \
+	-Dforce_posix_threads=false \
+	-D{man-pages,nls,oss_fuzz,libelf}=disabled

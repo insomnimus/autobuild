@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+download winpthreads lib/libpthread.a mingw-w64-libraries/winpthreads
+# LTO's probably not very useful here so keep it simple.
+set_env -fno-lto
+configure_install_par

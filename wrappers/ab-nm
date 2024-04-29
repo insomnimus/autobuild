@@ -1,0 +1,14 @@
+#!/usr/bin/env dash
+# shellcheck disable=SC2086
+
+case "$AB_NM" in
+"")
+	echo 1>&2 "ab-nm: error: \$AB_NM is not set"
+	exit 1
+	;;
+*ab-nm*)
+	echo 1>&2 "ab-nm: error: \$AB_NM is set to ab-nm, causing infinite recursion"
+	exit 1
+	;;
+*) exec $AB_NM "$@" ;;
+esac

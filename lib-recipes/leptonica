@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download leptonica lib/libleptonica.a
+install_lib zlib giflib png tiff webp openjpeg
+
+set_env -DMINIMUM_SEVERITY=L_SEVERITY_WARNING -DOPJ_STATIC
+
+# run autoreconf -fi
+configure_install_par \
+	--disable-{programs,debug,silent-rules}
+# --with-{zlib,libpng,jpeg,giflib,libtiff,libwebp,libwebpmux,libopenjpeg}
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/lept.pc" Cflags.private+=-DOPJ_STATIC

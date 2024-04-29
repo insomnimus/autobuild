@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download devIL
+
+install_lib jasper png tiff mng
+
+set_env
+
+# TODO: This library seems to leverage nvidia stuff, look at the options with cmake -LH
+
+mkcd DevIL/autobuild
+cmake_install .. \
+	-DBUILD_{STATIC_LIBS=ON,SHARED_LIBS=OFF}

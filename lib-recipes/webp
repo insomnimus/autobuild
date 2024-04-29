@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+download webp lib/libwebp.a
+
+run install_lib png sdl2
+# TODO: also enable gif and openjpeg; look at webp configure script again
+
+set_env
+
+run ./autogen.sh
+configure_install \
+	--with-gnu-ld \
+	--disable-{dependency-tracking,maintainer-mode,asserts}

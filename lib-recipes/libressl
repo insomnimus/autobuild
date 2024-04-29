@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download libressl lib/libtls.a
+
+set_env
+
+configure_install_par \
+	--disable-tests \
+	--with-openssldir=C:/programdata/ssl

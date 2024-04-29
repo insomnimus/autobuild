@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download blake2 lib/libb2.a
+
+set_env
+
+run ./autogen.sh
+configure_install_par \
+	--disable-{dependency-tracking,native} \
+	--enable-openmp \
+	--with-gnu-ld

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Note: Even though the repo is updated regularly, the last tag is on 2010.
+download bzip2 lib/libbz2_static.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DENABLE_{STATIC_LIB=ON,SHARED_LIB=OFF} \
+	-DENABLE_{DEBUG,DOCS,EXAMPLES,TESTS,WERROR}=OFF \
+	app:-DENABLE_APP=ON \
+	lib:-DENABLE_APP=OFF
+
+# The static lib is libbz2_static.a for some reason, need to symlink it
+ln -fs libbz2_static.a "$AB_PREFIX/lib/libbz2.a"
+
+out "$AB_PREFIX/bin/"{bunzip2,bzcat,bzip2,bzip2recover}.exe

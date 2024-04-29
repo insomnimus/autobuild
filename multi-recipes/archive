@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+download archive lib/libarchive.a
+install_lib iconv lz4 zlib zstd bzip2 blake2 xz systre nettle
+
+set_env -DLIBXML_STATIC -lws2_32
+append_pkgconfig regex
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DBUILD_TESTING=OFF \
+	-DENABLE_{BZip2,ICONV,LIBB2,LIBXML2,LZ4,LZMA,NETTLE,ZLIB,ZSTD}=ON \
+	-DENABLE_{CAT,CPIO,TAR}="$(if [[ $APP ]]; then echo ON; else echo OFF; fi)" \
+	-DENABLE_{COVERAGE,TEST,WERROR}=OFF \
+	-DENABLE_PCREPOSIX=OFF \
+	-DPKG_CONFIG_ARGN=--static \
+	-DLIBGCC_LIBRARY=-l:libgcc.a
+
+# -DENABLE_{INSTALL,BZip2,ICONV,LIBB2,LIBGCC,LZMA,PCREPOSIX,ZLIB,ZSTD}=ON \
+# -DLIBICONV_PATH="$AB_PREFIX/lib/libiconv.a" \
+# -D{ICONV,ZLIB,LIBLZMA,LIBB2,BZIP2,ZSTD}_INCLUDE_DIR="$AB_PREFIX/include" \
+# -DZSTD_LIBRARY="$AB_PREFIX/lib/libzstd.a"
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/libarchive.pc" Cflags.private+=-DLIBXML_STATIC
+out "$AB_PREFIX"/bin/{bsdcat,bsdcpio,bsdtar}.exe

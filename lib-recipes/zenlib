@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+download zenlib lib/libzen.a
+
+set_env

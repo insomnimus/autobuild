@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+# Users shouldn't attempt to install this on the command line; it conflicts with ffmpeg (7).
+if [[ $AB_PREFIX == "$AB_ROOT/libraries" ]]; then
+	error "you can't manually install ffmpeg6; it conflicts with ffmpeg and is only kept because some packages need an older version"
+fi
+
+download ffmpeg6 lib/libavcodec.a
+
+FFMPEG="${FFMPEG:-full}"
+
+install_lib ffnvcodec6
+
+flags=(--enable-{schannel,d3d11va,dxva2,cuda,cuvid,nvenc,cuda-llvm,ffnvcodec,nvdec,nvenc})
+deps=()
+extra_libs=()
+
+basic=(
+	iconv amf bzlib:bzip2 zlib lzma:xz
+	gmp lib{x264,x265,aom,mp3lame:lame,opus,vorbis,vpx,dav1d,fdk-aac}
+	# Hardware accels
+	libvpl opencl -l{cfgmgr32,ole32}
+)
+zeranoe=(
+	"${basic[@]}"
+	-l{bluray,xml2,png,bz2,z}
+	fontconfig libopencore-{amrnb,amrwb}:opencore-amr libtwolame
+	# libtls:libressl
+	lib{ass,xml2,freetype,harfbuzz}
+	lib{openjpeg,snappy,soxr,webp,bluray}
+	lib{speex,theora,vidstab,zimg,rav1e}
+	libsvtav1:svt-av1 libvmaf libgsm
+)
+decoders=(
+	"${basic[@]}"
+	lib{twolame,gsm,gme}
+	libopencore-{amrnb,amrwb}:opencore-amr
+	-l:libpthread.a
+)
+full=(
+	"${zeranoe[@]}"
+	# vulkan
+	lib{fribidi,ilbc,mysofa,aribb24,bs2b,caca}
+	chromaprint
+	decklink:decklink-headers libcdio:cdio-paranoia
+	lib{flite,rist,gme}
+	# libglslang
+	libshaderc
+	-l:libpthread.a
+	# ffmpeg wants rubberband >= v1.8.1, but latest is 3.x (too new)
+)
+case "$FFMPEG" in
+bare) : noop ;;
+basic) deps+=("${basic[@]}") ;;
+zeranoe) deps+=("${zeranoe[@]}") ;;
+decoders) deps+=("${decoders[@]}") ;;
+full) deps+=("${full[@]}") ;;
+*) error "unknown ffmpeg build preset: $FFMPEG" ;;
+esac
+
+for lib in "${deps[@]}"; do
+	if [[ $lib == -l* ]]; then
+		extra_libs+=("$lib")
+		continue
+	fi
+
+	IFS=: read -ra arr <<<"$lib"
+	recipe="${arr[1]:-$lib}"
+	lib="${arr[0]}"
+	if [[ ${#arr[@]} == 1 && ${recipe:0:3} == lib ]]; then
+		install_lib "${recipe:3}"
+	else
+		install_lib "$recipe"
+	fi
+	flags+=("--enable-$lib")
+done
+
+if [[ $FFMPEG != bare ]]; then
+	extra_libs+=(-liconv)
+fi
+
+set_env \
+	-DLIBTWOLAME_STATIC \
+	{x,gcc:link}:-fno-lto \
+	cxx:-static-libstdc++
+
+# -DLIB{TWOLAME,XML}_STATIC \
+# -DCHROMAPRINT_NODLL \
+
+LDFLAGS+=" $($CXX -print-file-name=libstdc++.a)"
+
+info "configuring ffmpeg"
+AB_CFLAGS="-O0 -fno-lto" run ./configure \
+	--arch=x86_64 --target-os=mingw64 ${AB_CPU:+--cpu=$AB_CPU} \
+	--cross-prefix=ab- \
+	--enable-static --disable-shared \
+	--prefix="$AB_PREFIX" \
+	--disable-programs \
+	--enable-{gpl,nonfree,version3} \
+	--enable-{runtime-cpudetect,cross-compile} \
+	--pkg-config-flags=--static \
+	--disable-{autodetect,debug,doc,htmlpages,manpages,podpages,txtpages} \
+	--enable-{avdevice,avcodec,avformat,swresample,swscale,postproc,avfilter} \
+	"${flags[@]}" \
+	--extra-version="autobuild.$FFMPEG.$AB_TOOLCHAIN" \
+	--extra-libs="${extra_libs[*]}"
+
+info "building ffmpeg"
+run make -j$JOBS
+run make install
