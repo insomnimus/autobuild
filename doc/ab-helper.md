@@ -132,7 +132,7 @@ Due to the downloads on `https://www.sqlite.org/download.html` being dynamically
 The program will try to instantiate one; if none is found or an error occurs, a fallback hard-coded version is printed.
 
 ## `ab-helper dl`
-Downloads a file form the internet.
+Downloads a file from the internet.
 
 Since the helper isn't meant to face the user, this subcommand is fairly primitive:
 - Unlike `wget`, it won't infer file names; the caller has to provide a file to write to.
