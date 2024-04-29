@@ -5,7 +5,7 @@ The script must have the same name as the recipe. It also needs to be a Bash scr
 
 The driver will "dot source" the script in a subshell. The script will start with the library already included (`lib.sh`) and the shell options `set -e` and `set -u` set, meaning errors will cause it to exit the script, and undefined variable names will cause errors.
 
-The script is responsible for setting up environment variables related to cross compiling since these vary per project. Refer to the `set_env` function's documentation in [Library Functions](library-functions.md).
+The script is responsible for setting up environment variables related to cross compiling since these vary per project. Refer to the `set_env` function's documentation in [Library Functions](library.md).
 
 ## Download Sources
 There are 3 types of download sources. Each one of these has a map variable declared in `repos.sh`.
