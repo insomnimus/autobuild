@@ -98,6 +98,7 @@ declare -A AB_REPOS_GIT=(
 	[hsts]=https://gitlab.com/rockdaboot/libhsts
 	[xevd]=master:https://github.com/mpeg5/xevd
 	[xeve]=master:https://github.com/mpeg5/xeve
+	[tlrc]=https://github.com/tldr-pages/tlrc
 )
 
 declare -A AB_REPOS_DIRECT=(

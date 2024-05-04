@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bin tldr
+out target/x86_64-pc-windows-gnu/release/tldr.exe
