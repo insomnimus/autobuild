@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-# git checkout --quiet n6.1.1
-# echo n6.1.1
-
-output="$(git tag --list --sort=-taggerdate)"
+output="$(git tag --list --sort=-v:refname 'n*.*')"
 
 while read -r s; do
 	if [[ $s != *-dev ]]; then
