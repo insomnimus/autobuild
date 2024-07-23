@@ -12,6 +12,7 @@ set(CMAKE_RANLIB llvm-ranlib)
 set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
 set(CMAKE_C_COMPILER_TARGET x86_64-w64-mingw32)
 set(CMAKE_CXX_COMPILER_TARGET x86_64-w64-mingw32)
+set(CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS "clang-scan-deps")
 
 find_program(PKG_CONFIG_EXECUTABLE x86_64-w64-mingw32-pkg-config)
 find_program(CMAKE_RC_COMPILER NAMES ${CMAKE_RC_COMPILER})
