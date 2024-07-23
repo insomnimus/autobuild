@@ -14,7 +14,7 @@ mkcd autobuild
 cmake_install .. \
 	-DWIN32_EXECUTABLE=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
-	-DDEFAULT_SOUNDFONT=X:/soundfonts/default.sf2 \
+	-DDEFAULT_SOUNDFONT="${FLUIDSYNTH_DEFAULT_SOUNDFONT:-C:/soundfonts/default.sf2}" \
 	-DLIB_SUFFIX="" \
 	-DInstPatch_LIBRARY="$AB_PREFIX/lib/libinstpatch-2.a" \
 	-Denable-{aufile,dsound,libsndfile,openmp,threads,wasapi,waveout,winmidi,readline}=ON \

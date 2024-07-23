@@ -401,6 +401,7 @@ function prepare_autotools() {
 function run_cmake() {
 	set -ue
 	local args=(
+		-G Ninja
 		-DCMAKE_BUILD_TYPE=Release
 		-DCMAKE_INSTALL_PREFIX="${AB_PREFIX:?}"
 		-DCMAKE_TOOLCHAIN_FILE="${AB_CMAKE:?}"
@@ -426,7 +427,7 @@ function cmake_install() {
 	set -ue
 	local path="$1"
 	shift
-	run_cmake "$path" -G Ninja "$@"
+	run_cmake "$path" "$@"
 	run cmake --build . --config Release
 	run cmake --install .
 }

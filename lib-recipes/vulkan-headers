@@ -9,5 +9,4 @@ set_env
 # -DVULKAN_HPP_{SAMPLES,TESTS}_BUILD=OFF
 
 mkcd Vulkan-Headers/autobuild
-run_cmake .. -DBUILD_TESTS=OFF
-run cmake --install .
+cmake_install .. -DBUILD_TESTS=OFF
