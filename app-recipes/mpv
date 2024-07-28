@@ -7,8 +7,8 @@ install_lib \
 	cdio-paranoia lcms2 mujs \
 	caca jpeg-turbo shaderc spirv-cross
 
-ffmpeg_prefix="$AB_OPT/ffmpeg6_decoders"
-FFMPEG=decoders AB_PREFIX="$ffmpeg_prefix" install_lib ffmpeg6
+ffmpeg_prefix="$AB_OPT/ffmpeg_decoders"
+FFMPEG=decoders AB_PREFIX="$ffmpeg_prefix" install_lib ffmpeg
 
 # It wants to link with spirv-cross dynamically.
 sed -i "s/dependency('spirv\\-cross\\-c\\-shared'/dependency('spirv-cross-c'/g" meson.build

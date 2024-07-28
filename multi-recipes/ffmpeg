@@ -2,13 +2,6 @@
 
 download ffmpeg lib/libavcodec.a
 
-# mkdir ab_patches
-# wget -P ab_patches https://raw.githubusercontent.com/m-ab-s/mabs-patches/master/ffmpeg/0001-glslang-Remove-HLSL-and-OGLCompiler-libraries.patch
-# for p in ./ab_patches/*.patch; do
-# git apply -3 --check --ignore-space-change --ignore-whitespace "$p" >/dev/null 2>&1
-# git am -q -3 --ignore-whitespace --no-gpg-sign "$p" >/dev/null 2>&1
-# done
-
 FFMPEG="${FFMPEG:-full}"
 
 install_lib ffnvcodec
@@ -39,9 +32,12 @@ zeranoe=(
 	libsvtav1:svt-av1 libvmaf libgsm
 )
 decoders=(
-	"${basic[@]}"
-	lib{twolame,gsm,gme}
+	lib{dav1d,xevd,gsm,ilbc,opus,aribb24,gme}
+	# lib{twolame,gsm,gme}
 	libopencore-{amrnb,amrwb}:opencore-amr
+	iconv amf bzlib:bzip2 zlib lzma:xz
+	libvpl opencl -l{cfgmgr32,ole32}
+	$(if [[ -n $APP ]]; then echo sdl2; fi)
 )
 full=(
 	"${zeranoe[@]}"
