@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bin=cargo-{rm,upgrade,set-version}
+out target/x86_64-pc-windows-gnu/release/cargo-{rm,upgrade,set-version}.exe

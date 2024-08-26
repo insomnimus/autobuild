@@ -560,6 +560,7 @@ function cargo_build() {
 			fi
 		done
 
+		RUSTFLAGS="${rf[*]}" \
 		AR=llvm-ar \
 			PKG_CONFIG_ALLOW_CROSS_x86_64_pc_windows_gnu=1 \
 			PKG_CONFIG_x86_64_pc_windows_gnu=ab-pkg-config \
@@ -568,8 +569,7 @@ function cargo_build() {
 			$release \
 			--target x86_64-pc-windows-gnu \
 			--config "$AB_CARGO_CONFIG" \
-			"$@" \
-			-- "${rf[@]}"
+			"$@"
 	)
 }
 
