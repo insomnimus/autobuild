@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build -p cargo-clone
+out target/x86_64-pc-windows-gnu/release/cargo-clone.exe

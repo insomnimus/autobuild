@@ -3,6 +3,7 @@
 declare -A AB_REPOS_GIT=(
 	[catbox]=https://github.com/Savolae/catbox
 	["cargo-edit"]=https://github.com/killercup/cargo-edit
+	["cargo-clone"]=https://github.com/JanLikar/cargo-clone
 	[ripgrep]=https://github.com/BurntSushi/ripgrep
 	[luajit]=master:https://luajit.org/git/luajit.git
 	[tidy]=https://github.com/htacg/tidy-html5
