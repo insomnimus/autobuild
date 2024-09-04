@@ -6,6 +6,7 @@ mod edit_pc;
 mod logger;
 mod merge_dir;
 mod template;
+mod toml;
 mod version;
 
 use std::env;
@@ -33,6 +34,7 @@ enum Cmd {
 	EditLt(edit_lt::EditLt),
 	EditPc(edit_pc::EditPc),
 	MergeDir(merge_dir::MergeDir),
+	Toml(toml::Toml),
 	/// Print the version string alone
 	Version,
 }
@@ -67,6 +69,7 @@ fn main() {
 			Cmd::EditPc(x) => edit_pc::run(x),
 			Cmd::EditLt(x) => edit_lt::run(x),
 			Cmd::MergeDir(x) => merge_dir::run(x),
+			Cmd::Toml(x) => toml::run(x),
 		}?;
 
 		Ok(())
