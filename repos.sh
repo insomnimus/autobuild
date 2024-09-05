@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 declare -A AB_REPOS_GIT=(
-	[catbox]=https://github.com/Savolae/catbox
-	["cargo-edit"]=https://github.com/killercup/cargo-edit
 	["cargo-clone"]=https://github.com/JanLikar/cargo-clone
+	["cargo-edit"]=https://github.com/killercup/cargo-edit
+	[catbox]=https://github.com/Savolae/catbox
 	[ripgrep]=https://github.com/BurntSushi/ripgrep
+	[mdbook]=https://github.com/rust-lang/mdBook.git
 	[luajit]=master:https://luajit.org/git/luajit.git
 	[tidy]=https://github.com/htacg/tidy-html5
 	["rust-bindgen"]=https://github.com/rust-lang/rust-bindgen
