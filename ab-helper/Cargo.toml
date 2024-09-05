@@ -1,6 +1,6 @@
 [package]
 name = "ab-helper"
-version = "0.7.0"
+version = "0.9.0"
 edition = "2021"
 
 [profile.release]
@@ -11,7 +11,7 @@ lto = "thin"
 
 [dependencies]
 anyhow = "1.0.86"
-clap = { version = "4.5.16", features = ["derive"] }
+clap = { version = "4.5.17", features = ["derive"] }
 globset = "0.4.14"
 goblin = { version = "0.8.2", default-features = false, features = ["pe32", "pe64", "endian_fd"] }
 headless_chrome = "1.0.14"
@@ -21,7 +21,7 @@ log = "0.4.22"
 rand = "0.8.5"
 regex = "1.10.6"
 serde = { version = "1.0.209", features = ["derive"] }
-serde_json = "1.0.127"
+serde_json = "1.0.128"
 toml_edit = "0.22.20"
 ureq = { version = "2.10.1", features = ["charset"] }
 url = "2.5.2"

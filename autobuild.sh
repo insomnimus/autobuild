@@ -35,10 +35,11 @@ set -ue
 
 	AB_TAG=""
 	AB_VERBOSE=""
+	export AB_OPT_LEVEL=2
 	AB_TOOLCHAIN=llvm
 	AB_CMAKE=""
 	AB_MESON=""
-	AB_CARGO_CONFIG="$AB_DIR/config/cargo-config.toml"
+	AB_CARGO_CONFIG=""
 
 	JOBS="$(nproc 2>/dev/null || echo 0)"
 	((JOBS += 2))
@@ -48,6 +49,9 @@ set -ue
 	force=""
 	build_lib=""
 	clean=no
+	AB_RUST_PANIC=abort
+	rust_codegen_units=1
+	AB_RUST_BUILD_STD=0
 }
 
 # shellcheck source-path=SCRIPTDIR/lib.sh
@@ -66,6 +70,7 @@ function show_help() {
 		   This option is useful if you have a custom mingw sysroot
 		   You don't need to use it if you obtained mingw-w64 with your package manager
 		  -l, --lib: Build a library recipe
+		  -O, --opt-level=0|1|2|3|s: Optimization level [default: $AB_OPT_LEVEL]
 		  --no-lto: Disable link time optimization
 		  --cpu=CPU: Optimize for the given CPU (accepts the same names as gcc -mtune=) [default: $AB_CPU]
 		  --use-march: Instead of using -mtune, use -march (may cause build errors and the produced executables may not run on other CPUs)
@@ -73,6 +78,11 @@ function show_help() {
 		  --clean: Clean build artifacts (non destructive)
 		  -f, --force: Force a build even if the latest version of the recipe is installed
 		  -v, --verbose: Be more verbose
+		  --rust-panic=abort|unwind: Whether rust programs should abort or unwind on panics [default: $AB_RUST_PANIC]
+		  --rust-codegen-units=N: Number of Rust code generation units; lower values are likely to produce faster or smaller binaries at the expense of compilation time [default: $rust_codegen_units]
+		  --rust-build-std: Build the Rust standard library from source for Rust programs (may improve performance and reduce binary size at the expense of compilation time)
+		    This will install the unstable toolchain and the rust-src component with rustup if it's missing
+		    This is experimental and might fail to build
 		  -h, --help: Show this message and exit
 		  -H, --hook=COMMAND: Run COMMAND if an app recipe completes and creates an archive
 		   The following environment variables will be set for the command:
@@ -81,6 +91,11 @@ function show_help() {
 			\$ARCHIVE_PATH: Full path to the generated release archive
 		   COMMAND will be executed as if typed on a Bash prompt
 	END
+}
+
+function err_exit() {
+	echo 1>&2 "error: $*"
+	exit 1
 }
 
 # Parse args.
@@ -96,7 +111,7 @@ function show_help() {
 			for ((i = 1; i < ${#1}; i++)); do
 				c="${1:i:1}"
 				ARGV+=("-$c")
-				if [[ $c == [RMHj] && $i -lt ${#1}-1 ]]; then
+				if [[ $c == [RMHjO] && $i -lt ${#1}-1 ]]; then
 					# It's a known option with a value attached.
 					ARGV+=("${1:i+1}")
 					break
@@ -132,50 +147,70 @@ function show_help() {
 		--use-march) use_march=yes ;;
 		--cpu)
 			if ! shift; then
-				eprint "error: --cpu requires a value but none was provided"
-				exit 1
+				err_exit "--cpu requires a value but none was provided"
 			fi
 			AB_CPU="$1"
 			if [[ ! $AB_CPU =~ ^[a-zA-Z0-9][a-zA-Z0-9+_-]*$ ]]; then
-				eprint "error: --cpu: value doesn't look like a valid cpu name: $AB_CPU"
-				exit 1
+				err_exit "--cpu: value doesn't look like a valid cpu name: $AB_CPU"
 			fi
+			;;
+		-O | --opt-level)
+			if ! shift; then
+				err_exit "-O --rust-panic requires a value but none was provided"
+			fi
+			if [[ $1 != [0123s] ]]; then
+				err_exit "the optimization level must be one of 0, 1, 2, 3 or s; got $1"
+			fi
+			AB_OPT_LEVEL="$1"
+			;;
+		--rust-build-std) AB_RUST_BUILD_STD=1 ;;
+		--rust-codegen-units)
+			if ! shift; then
+				err_exit "--rust-codegen-units requires a value but none was provided"
+			fi
+			if [[ ! $1 =~ ^[1-9][0-9]*$ ]]; then
+				err_exit "--rust-codegen-units must be a positive integer"
+			fi
+			rust_codegen_units="$1"
+			;;
+		--rust-panic)
+			if ! shift; then
+				err_exit "--rust-panic requires a value but none was provided"
+			fi
+			if [[ $1 != abort && $1 != unwind ]]; then
+				err_exit "--rust-panic must be one of abort or unwind; got $1"
+			fi
+			AB_RUST_PANIC="$1"
 			;;
 		-M | --mingw-root)
 			if ! shift; then
-				eprint "error: -M --mingw-root requires a value but none was provided"
-				exit 1
+				err_exit "-M --mingw-root requires a value but none was provided"
 			fi
 			AB_MINGW_SYSROOT="$(realpath -- "$1")" || exit
 			;;
 		-R | --root)
 			if ! shift; then
-				eprint "error: -R --root requires a value but none was provided"
-				exit 1
+				err_exit "-R --root requires a value but none was provided"
 			fi
 			AB_ROOT="$1"
 			;;
 		-H | --hook)
 			if ! shift; then
-				eprint "error: the option -H --hook requires a value"
-				exit 1
+				err_exit "the option -H --hook requires a value"
 			fi
 			AB_HOOK="$1"
 			;;
 		-j | --jobs)
 			if ! shift; then
-				eprint "error: the option -j --jobs requires a value"
-				exit 1
+				err_exit "the option -j --jobs requires a value"
 			fi
 			JOBS="$1"
 			if [[ ! $JOBS =~ ^[0-9]+$ ]]; then
-				eprint "error: value passed to -j --jobs must be a non-negative integer"
-				exit 1
+				err_exit "value passed to -j --jobs must be a non-negative integer"
 			fi
 			;;
 		-*)
-			eprint "error: unrecognized option $1"
-			exit 1
+			err_exit "unrecognized option $1"
 			;;
 		*)
 			recipes+=("$1")
@@ -202,10 +237,10 @@ function show_help() {
 	else
 		BASE_FLAGS+=(x:-mtune="$AB_CPU")
 	fi
+	BASE_FLAGS+=("-O$AB_OPT_LEVEL")
 
 	if [[ -z $AB_ROOT ]]; then
-		eprint "error: --root is required"
-		exit 1
+		err_exit "--root is required"
 	fi
 
 	AB_ROOT="$(realpath -- "$AB_ROOT")"
@@ -218,18 +253,15 @@ function show_help() {
 
 	# Check for incorrect options.
 	if [[ ! $AB_ROOT =~ ^[a-zA-Z0-9/+\-_@\.=]+$ ]]; then
-		eprint "error: --root must not contain special characters or whitespace"
-		exit 1
+		err_exit "--root must not contain special characters or whitespace"
 	elif [[ -n $AB_MINGW_SYSROOT && ! $AB_MINGW_SYSROOT =~ ^[a-zA-Z0-9/+\-_@\.=]+$ ]]; then
-		eprint "error: --mingw-root must not contain special characters or whitespace"
-		exit 1
+		err_exit "--mingw-root must not contain special characters or whitespace"
 	elif [[ -n $AB_MINGW_SYSROOT && ! -d $AB_MINGW_SYSROOT ]]; then
-		eprint "error: --mingw-root does not point to a directory"
-		exit 1
+		err_exit "--mingw-root does not point to a directory"
 	elif [[ -n $AB_MINGW_SYSROOT && ! -e "$AB_MINGW_SYSROOT/x86_64-w64-mingw32" ]]; then
-		eprint "error: --mingw-root: directory does not contain x86_64-w64-mingw32"
-		exit 1
+		err_exit "--mingw-root: directory does not contain x86_64-w64-mingw32"
 	fi
+
 	# Deduplicate arguments.
 	declare -A map
 	_recipes=()
@@ -241,20 +273,19 @@ function show_help() {
 		_recipes+=("$r")
 		if [[ $build_lib && ! -f "$AB_DIR/lib-recipes/$r" && ! -f "$AB_DIR/multi-recipes/$r" ]]; then
 			if [[ -f "$AB_DIR/app-recipes/$r" ]]; then
-				eprint "error: $r is not a library; if you meant to build an app, do not specify --lib"
+				err_exit "$r is not a library; if you meant to build an app, do not specify --lib"
 			else
-				eprint "error: $r: no such recipe"
+				err_exit "$r: no such recipe"
 			fi
-			exit 1
 		elif [[ ! $build_lib && ! -f "$AB_DIR/app-recipes/$r" && ! -f "$AB_DIR/multi-recipes/$r" ]]; then
 			if [[ -f "$AB_DIR/lib-recipes/$r" ]]; then
-				eprint "error: $r is not an application; if you meant to build a library, specify --lib"
+				err_exit "$r is not an application; if you meant to build a library, specify --lib"
 			else
-				eprint "error: $r: no such recipe"
+				err_exit "$r: no such recipe"
 			fi
-			exit 1
 		fi
 	done
+
 	recipes=("${_recipes[@]}")
 }
 
@@ -284,11 +315,9 @@ if [[ $clean == yes ]]; then
 fi
 
 if [[ ${#recipes[@]} == 0 ]]; then
-	eprint "error: no recipe was specified"
-	exit 1
+	err_exit "no recipe was specified"
 elif [[ $build_lib != yes && "${#recipes[@]}" != 1 ]]; then
-	eprint "error: only one app can be built at once"
-	exit 1
+	err_exit "only one app can be built at once"
 fi
 
 # Check for required programs and versions
@@ -344,8 +373,7 @@ mkdir -p -- "$AB_INSTALL" "$AB_ROOT/logs" "$AB_DB" "$AB_SOURCES" "$AB_PREFIX" "$
 		target_dir="${CARGO_TARGET_DIR:-"$AB_DIR/ab-helper/target"}"
 
 		CARGO_TARGET_DIR="$target_dir" run cargo build -r --manifest-path "$AB_DIR/ab-helper/Cargo.toml" || {
-			eprint "error: failed to build required tool ab-helper; please verify that your rust toolchain is up to date and functional"
-			exit 1
+			err_exit "failed to build required tool ab-helper; please verify that your rust toolchain is up to date and functional"
 		}
 
 		run cp -f "$target_dir/release/ab-helper" "$AB_LOCAL/bin/ab-helper"
@@ -357,6 +385,17 @@ export PATH="$AB_WRAPPERS:$AB_LOCAL/bin:${AB_MINGW_SYSROOT:+$AB_MINGW_SYSROOT/x8
 unset CARGO_TARGET_DIR
 AB_TMP="$(mktemp -d autobuild_XXXXXX --tmpdir)"
 mkdir -- "$AB_TMP/checked-for-updates"
+AB_CARGO_CONFIG="$AB_TMP/cargo-config.toml"
+ab-helper toml set -p "$AB_DIR/config/cargo-config.toml" -o "$AB_CARGO_CONFIG" \
+	"profile.release.panic = '$AB_RUST_PANIC'" \
+	"profile.release.codegen-units = $rust_codegen_units" \
+	"profile.release.opt-level = $(
+		if [[ $AB_OPT_LEVEL == [0123] ]]; then
+			echo "$AB_OPT_LEVEL"
+		else
+			echo "'$AB_OPT_LEVEL'"
+		fi
+	)"
 
 {
 	verbose "probing for the default C runtime"
@@ -367,6 +406,7 @@ mkdir -- "$AB_TMP/checked-for-updates"
 		-fuse-ld=lld -o "$exe" -x c - <<-'EOF'
 			int main() { return 0; }
 		EOF
+
 	AB_MINGW_CRT="$(ab-helper detect-crt -- "$exe")" || {
 		rm -rf -- "$AB_TMP"
 		exit 1
@@ -377,8 +417,7 @@ mkdir -- "$AB_TMP/checked-for-updates"
 if [[ $build_lib ]]; then
 	for r in "${recipes[@]}"; do
 		if [[ ! -f "$AB_DIR/lib-recipes/$r" && ! -f "$AB_DIR/multi-recipes/$r" ]]; then
-			eprint "error: $r: no such library recipe"
-			exit 1
+			err_exit "$r: no such library recipe"
 		fi
 	done
 

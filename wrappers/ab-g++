@@ -20,7 +20,7 @@ args=()
 for a in "$@"; do
 	case "$a" in
 	# Some projects hardcode -O3 for no good reason; -O2 is as fast and smaller.
-	-O3) args+=(-O2) ;;
+	-O3) args+=("-O${AB_OPT_LEVEL:-2}") ;;
 	-I/usr/include | -L/usr/lib | -L/lib | -L/lib/)
 		if [ "${AB_IGNORE_SYSTEM_PATHS:-}" = 1 ]; then
 			echo 1>&2 "ab-g++: warning: attempted to use headers/libraries from build machine: $a"

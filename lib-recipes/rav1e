@@ -1,19 +1,4 @@
 #!/usr/bin/env bash
 
-ensure_rust_target
 download rav1e lib/librav1e.a
-
-if ! command -v cargo-cinstall &>/dev/null; then
-	info "installing cargo-c for native use"
-	unset_env
-	RUSTFLAGS="-Ctarget-cpu=native -Copt-level=2" run cargo install cargo-c
-	info "successfully installed cargo-c"
-fi
-
-set_rustflags
-run cargo cinstall \
-	--lib \
-	--target x86_64-pc-windows-gnu \
-	--release \
-	--library-type staticlib \
-	--prefix="$AB_PREFIX"
+cargo_cinstall

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+git checkout -q f4e7c46073850af7b5c3d58b9452bdd2124b593c
+current="$(latest_git_tag)"
+since_last="$(git rev-list --count HEAD)"
+
+if [[ $since_last == 0 ]]; then
+	printf %s "$current"
+else
+	printf %s "$current-r+$since_last"
+fi

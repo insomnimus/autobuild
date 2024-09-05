@@ -8,7 +8,7 @@ args=()
 for a in "$@"; do
 	case "$a" in
 	# Some projects hardcode -O3 but it's got little to no gains.
-	-O3) args+=(-O2) ;;
+	-O3) args+=("-O${AB_OPT_LEVEL:-2}") ;;
 	-I/usr/include | -L/usr/lib | -L/lib | -L/lib/)
 		if [ "${AB_IGNORE_SYSTEM_PATHS:-}" = 1 ]; then
 			echo 1>&2 "ab-clang++: warning: attempted to use headers/libraries from build machine: $a"

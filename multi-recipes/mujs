@@ -15,7 +15,7 @@ touch build/release/{mujs,mujs-pp}
 
 run make install \
 	prefix="$AB_PREFIX" \
-	OPTIM=-O2 \
+	OPTIM="-O${AB_OPT_LEVEL:-2}" \
 	CC="$CC -static $CFLAGS" \
 	AR="$AR" \
 	SO=dll \

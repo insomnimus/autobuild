@@ -7,13 +7,11 @@
 AB_HAVE_RUSTUP_WINDOWS_TARGET=0
 AB_GCC_LIBS=()
 BASE_FLAGS=(
-	r:-C{opt-level=2,codegen-units=2,lto=thin,strip=debuginfo}
 	gcc:x:-fmax-errors=5
 	llvm:x:-ferror-limit=5
 	gcc:-fno-lto llvm:x:-flto
 	# llvm:x:-Wl,--error-limit=10
-	-O2 -s -DNDEBUG
-	# -D_UCRT -lucrt
+	-s p:-DNDEBUG
 	x:{-g0,-w}
 )
 
@@ -560,13 +558,104 @@ function cargo_build() {
 			fi
 		done
 
+		local toolchain=nightly
+		local build_std="-Zbuild-std=std,core,alloc"
+		if [[ $AB_RUST_BUILD_STD == 0 ]]; then
+			toolchain=stable
+			build_std=""
+		elif [[ $AB_RUST_PANIC == abort ]]; then
+			build_std+=",panic_abort"
+		fi
+
 		RUSTFLAGS="${rf[*]}" \
-		AR=llvm-ar \
+			AR=llvm-ar \
 			PKG_CONFIG_ALLOW_CROSS_x86_64_pc_windows_gnu=1 \
 			PKG_CONFIG_x86_64_pc_windows_gnu=ab-pkg-config \
 			TARGET_CC=ab-clang \
-			run cargo +stable rustc \
+			run cargo "+$toolchain" rustc \
 			$release \
+			$build_std \
+			--target x86_64-pc-windows-gnu \
+			--config "$AB_CARGO_CONFIG" \
+			"$@"
+	)
+}
+
+function cargo_cinstall() {
+	ensure_rust_target || return
+
+	# Ensure cargo-c is available and up to date
+	(
+		set -ue
+
+		local need_build=1
+		verbose "checking if cargo-c is installed and up to date"
+		if ! type "$AB_LOCAL/bin/cargo-cinstall" &>/dev/null; then
+			info "could not find cargo-c"
+		else
+			local installed_version upstream_version
+			installed_version="$(cargo-cinstall --version | awk '{print $2}')"
+			upstream_version="$(ab-helper crate-version cargo-c)"
+
+			if [[ $installed_version == "$upstream_version" ]]; then
+				need_build=0
+			else
+				verbose "detected update to cargo-c: $installed_version -> $upstream_version"
+			fi
+		fi
+
+		if [[ $need_build == 0 ]]; then
+			verbose "cargo-c is up to date"
+		else
+			info "installing cargo-c"
+			unset_env
+			cargo install cargo-c --root "$AB_LOCAL" --force
+		fi
+	)
+
+	(
+		set -ue
+		local rf=("-L:native=$AB_PREFIX/lib")
+
+		local a
+		for a in "${AB_GCC_LIBS[@]}" "${BASE_FLAGS[@]}"; do
+			case "$a" in
+			r:*) rf+=("${a:2}") ;;
+			l:*) rf+=("-Clink-arg=${a:2}") ;;
+			-L?*) rf+=("-L:native=${a:2}") ;;
+			-l:*.a) rf+=("-l:static=${a:2:${#a}-5}") ;;
+			-l*) rf+=("-l:static=${a:2}") ;;
+			esac
+		done
+
+		local release=--release
+		for a in "$@"; do
+			if [[ $a == --profile || $a == --profile=* ]]; then
+				release=""
+				break
+			fi
+		done
+
+		local toolchain=nightly
+		local build_std="-Zbuild-std=std,core,alloc"
+		if [[ $AB_RUST_BUILD_STD == 0 ]]; then
+			toolchain=stable
+			build_std=""
+		elif [[ $AB_RUST_PANIC == abort ]]; then
+			build_std+=",panic_abort"
+		fi
+
+		RUSTFLAGS="${rf[*]}" \
+			AR=llvm-ar \
+			PKG_CONFIG_ALLOW_CROSS_x86_64_pc_windows_gnu=1 \
+			PKG_CONFIG_x86_64_pc_windows_gnu=ab-pkg-config \
+			TARGET_CC=ab-clang \
+			run cargo "+$toolchain" cinstall \
+			$build_std \
+			$release \
+			--lib \
+			--library-type=staticlib \
+			--prefix="$AB_PREFIX" \
 			--target x86_64-pc-windows-gnu \
 			--config "$AB_CARGO_CONFIG" \
 			"$@"
@@ -670,20 +759,49 @@ function ensure_rust_target() {
 		return
 	fi
 
+	local toolchain=nightly
+	if [[ $AB_RUST_BUILD_STD == 0 ]]; then
+		toolchain=stable
+	fi
+
+	verbose "checking if the $toolchain x86_64-pc-windows-gnu target is installed with rustup"
 	local output
-	verbose "checking if the x86_64-pc-windows-gnu target is installed with rustup"
-	output="$(rustup target list --installed --toolchain stable)"
+	output="$(rustup target list --installed --toolchain "$toolchain")"
+	local found_target=0
+
 	local s
 	while read -r s; do
 		if [[ $s == x86_64-pc-windows-gnu ]]; then
 			verbose "yes"
-			return 0
+			found_target=1
+			break
 		fi
 	done <<<"$output"
 
-	info "installing the rust target for x86_64-pc-windows-gnu"
-	rustup target add x86_64-pc-windows-gnu --toolchain stable
-	info "successfully installed the windows target"
+	if [[ $found_target == 0 ]]; then
+		info "installing the rust target for x86_64-pc-windows-gnu"
+		rustup target add x86_64-pc-windows-gnu --toolchain stable
+		info "successfully installed the windows target"
+	fi
+
+	if [[ $AB_RUST_BUILD_STD != 0 ]]; then
+		verbose "checking if the rust-src component is installed for nightly x86_64-pc-windows-gnu"
+		local found_rust_src=0
+		output="$(rustup component list --installed --toolchain nightly)"
+		while read -r s; do
+			if [[ $s == rust-src ]]; then
+				found_rust_src=1
+				verbose "yes"
+				break
+			fi
+		done <<<"$output"
+
+		if [[ $found_rust_src == 0 ]]; then
+			info "installing the rust-src component for nightly x86_64-pc-windows-gnu with rustup"
+			run rustup component add rust-src --toolchain=nightly --target=x86_64-pc-windows-gnu
+		fi
+	fi
+
 	AB_HAVE_RUSTUP_WINDOWS_TARGET=1
 }
 

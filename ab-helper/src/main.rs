@@ -1,4 +1,5 @@
 mod check;
+mod crate_version;
 mod detect_crt;
 mod dl;
 mod edit_lt;
@@ -29,6 +30,7 @@ struct App {
 #[derive(Clap)]
 enum Cmd {
 	Check(check::Check),
+	CrateVersion(crate_version::CrateVersion),
 	Dl(dl::Dl),
 	DetectCrt(detect_crt::DetectCrt),
 	EditLt(edit_lt::EditLt),
@@ -64,6 +66,7 @@ fn main() {
 				Ok(())
 			}
 			Cmd::Check(x) => check::run(x),
+			Cmd::CrateVersion(x) => crate_version::run(x),
 			Cmd::Dl(x) => dl::run(x),
 			Cmd::DetectCrt(x) => detect_crt::run(x),
 			Cmd::EditPc(x) => edit_pc::run(x),
