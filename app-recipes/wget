@@ -8,7 +8,7 @@ set_env \
 	p:-D{PCRE2,PSL}_STATIC \
 	x:-Wl,--allow-multiple-definition
 
-export LIBS=-l:libpthread.a
+export LIBS="-l:libpthread.a -lbrotlienc -lbrotlicommon"
 configure_build_par \
 	--disable-{dependency-tracking,assert,nls,rpath} \
 	--enable-{largefile,year2038,threads=posix,pcre2} \
