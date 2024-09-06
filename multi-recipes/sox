@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 download sox lib/libsox.a
-info "NOTE: If the configure step for sox fails, make sure you have autoconf-archive installed on your system (https://www.gnu.org/software/autoconf-archive/)"
 install_lib ltdl flac gsm id3lib lame ao id3tag mad png sndfile vorbis opencore-amr opusfile twolame wavpack # vo-amrwbenc
 
 apply_patches -Np1
@@ -11,6 +10,9 @@ set_env \
 	c:-Wno-format \
 	cpp:-DFLAC__NO_DLL \
 	-l:libdl.a
+
+info "NOTE: If the configure step for sox fails, make sure you have autoconf-archive installed on your system (https://www.gnu.org/software/autoconf-archive/)"
+info "NOTE: Also if configure fails due to aclocal-1.16 being absent, you can usually symlink a newer version of aclocal to aclocal-1.16"
 
 export LIBS=-l:libssp.a
 export lt_cv_deplibs_check_method='pass_all'
