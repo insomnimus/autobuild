@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bin=cross
+out target/x86_64-pc-windows-gnu/release/cross.exe

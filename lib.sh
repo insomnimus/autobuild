@@ -637,12 +637,14 @@ function cargo_cinstall() {
 		done
 
 		local toolchain=nightly
-		local build_std="-Zbuild-std=std,core,alloc"
+		# cargo-c fails with build-std for mysterious reasons
+		# local build_std="-Zbuild-std=std,core,alloc"
 		if [[ $AB_RUST_BUILD_STD == 0 ]]; then
 			toolchain=stable
-			build_std=""
+			# build_std=""
 		elif [[ $AB_RUST_PANIC == abort ]]; then
-			build_std+=",panic_abort"
+			: noop
+			# build_std+=",panic_abort"
 		fi
 
 		RUSTFLAGS="${rf[*]}" \
@@ -651,7 +653,6 @@ function cargo_cinstall() {
 			PKG_CONFIG_x86_64_pc_windows_gnu=ab-pkg-config \
 			TARGET_CC=ab-clang \
 			run cargo "+$toolchain" cinstall \
-			$build_std \
 			$release \
 			--lib \
 			--library-type=staticlib \
@@ -780,12 +781,12 @@ function ensure_rust_target() {
 
 	if [[ $found_target == 0 ]]; then
 		info "installing the rust target for x86_64-pc-windows-gnu"
-		rustup target add x86_64-pc-windows-gnu --toolchain stable
+		rustup target add x86_64-pc-windows-gnu --toolchain "$toolchain"
 		info "successfully installed the windows target"
 	fi
 
 	if [[ $AB_RUST_BUILD_STD != 0 ]]; then
-		verbose "checking if the rust-src component is installed for nightly x86_64-pc-windows-gnu"
+		verbose "checking if the rust-src component is installed"
 		local found_rust_src=0
 		output="$(rustup component list --installed --toolchain nightly)"
 		while read -r s; do
@@ -797,8 +798,9 @@ function ensure_rust_target() {
 		done <<<"$output"
 
 		if [[ $found_rust_src == 0 ]]; then
-			info "installing the rust-src component for nightly x86_64-pc-windows-gnu with rustup"
-			run rustup component add rust-src --toolchain=nightly --target=x86_64-pc-windows-gnu
+			verbose "no"
+			info "installing the rust-src component for nightly x86_64-pc-windows-gnu"
+			run rustup component add rust-src --toolchain nightly --target x86_64-pc-windows-gnu
 		fi
 	fi
 
