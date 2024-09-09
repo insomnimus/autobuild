@@ -1,7 +1,7 @@
 # Autobuild
 Autobuild is a set of scripts and a frontend for cross compilation of statically-linked programs to Windows x64.
 
-There are build recipes for around 30 applications, and over 140 libraries.
+There are build recipes for dozens of applications and over 100 libraries.
 Among the applications are:
 - [FFmpeg](https://github.com/FFmpeg/FFmpeg) with nearly all optional libraries
 - [Wget](https://www.gnu.org/software/wget/) and [Wget2](https://github.com/rockdaboot/wget2)
@@ -13,6 +13,8 @@ Among the applications are:
 - [SoX](https://sourceforge.net/projects/sox/)
 
 All applications are statically linked. There are no DLLs.
+
+Note that this repository also contains apps that are trivial to build, as I have a personal automated build server and want to automatically build some of the stuff I use myself.
 
 ## Dependencies
 Autobuild makes use of several commonly available programs:
