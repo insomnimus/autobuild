@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 declare -A AB_REPOS_GIT=(
+	["cargo-binutils"]=https://github.com/rust-embedded/cargo-binutils.git
 	["cargo-clone"]=https://github.com/JanLikar/cargo-clone
 	["cargo-edit"]=https://github.com/killercup/cargo-edit
 	[catbox]=https://github.com/Savolae/catbox
 	[cross]=https://github.com/cross-rs/cross.git
 	[ripgrep]=https://github.com/BurntSushi/ripgrep
+	[rustfilt]=https://github.com/luser/rustfilt.git
 	[tokei]=https://github.com/XAMPPRocky/tokei
 	[mdbook]=https://github.com/rust-lang/mdBook.git
 	[luajit]=master:https://luajit.org/git/luajit.git

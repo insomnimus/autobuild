@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bins
+out target/x86_64-pc-windows-gnu/release/*.exe
