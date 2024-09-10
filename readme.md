@@ -71,7 +71,7 @@ This will download the source code for `mpc` and all of its dependencies, cross 
 The archive will be written into `<root>/install/mpc/mpc.<version>.tar.zst`.
 
 Some options you might want to mess with are
-- `-O` / `--opt-level`: Optimization level; one of `0`, `1`, `2`, `3`, and `s` (default is `2`)
+- `-O` / `--opt-level`: Optimization level; one of `0`, `1`, `2`, `3`, and `s` (default is `2`).
 - `-M/--mingw-root`: Path to a custom MinGW toolchain sysroot; use it if you have MinGW-W64 installed in a non-standard location (you should probably not use it if you're not sure you need it).
 - `--no-lto`: Disable link-time optimization; this may improve build times and memory use drastically at the cost of potentially missed optimizations. However the gains with LTO can be quite significant.
 - `--cpu`: Optimize for a specific CPU; the value is passed to clang/gcc as `-march=CPU`, and rustc as `-Ctarget-cpu=CPU`.
