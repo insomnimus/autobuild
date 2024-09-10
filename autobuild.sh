@@ -49,7 +49,7 @@ set -ue
 	recipes=()
 	force=""
 	build_lib=""
-	clean=no
+	clean=0
 	AB_RUST_PANIC=abort
 	rust_codegen_units=1
 	AB_RUST_BUILD_STD=0
@@ -143,7 +143,7 @@ function err_exit() {
 			AB_VERBOSE=1
 			export AB_HELPER_VERBOSE="${AB_HELPER_VERBOSE:-1}"
 			;;
-		--clean) clean=yes ;;
+		--clean) clean=1 ;;
 		--no-lto) no_lto=yes ;;
 		--cpu)
 			if ! shift; then
@@ -286,6 +286,12 @@ function err_exit() {
 		fi
 		map["$r"]=1
 		_recipes+=("$r")
+		if [[ $clean == 1 && ! -e $AB_SOURCES/$r ]]; then
+			err_exit "no $r in $AB_SOURCES"
+		elif [[ $clean == 1 ]]; then
+			continue
+		fi
+
 		if [[ $build_lib && ! -f "$AB_DIR/lib-recipes/$r" && ! -f "$AB_DIR/multi-recipes/$r" ]]; then
 			if [[ -f "$AB_DIR/app-recipes/$r" ]]; then
 				err_exit "$r is not a library; if you meant to build an app, do not specify --lib"
@@ -304,7 +310,7 @@ function err_exit() {
 	recipes=("${_recipes[@]}")
 }
 
-if [[ $clean == yes ]]; then
+if [[ $clean == 1 ]]; then
 	need_exec git
 	if [[ ${#recipes[@]} != 0 ]]; then
 		(
