@@ -73,7 +73,8 @@ The archive will be written into `<root>/install/mpc/mpc.<version>.tar.zst`.
 Some options you might want to mess with are
 - `-M/--mingw-root`: Path to a custom MinGW toolchain sysroot; use it if you have MinGW-W64 installed in a non-standard location (you should probably not use it if you're not sure you need it).
 - `--no-lto`: Disable link-time optimization; this may improve build times and memory use drastically at the cost of potentially missed optimizations. However the gains with LTO can be quite significant.
-- `--cpu`: Try to optimize for a specific CPU model; the value is passed to clang invocations as `-mtune=CPU`. The gains with it are not very profound but it should be harmless to use.
+- `--cpu`: Optimize for a specific CPU; the value is passed to clang/gcc as `-march=CPU`, and rustc as `-Ctarget-cpu=CPU`. This has the potential to create drastically faster binaries, especially for codecs such as libmp3lame, libfdk-aac, libopus (which will cascade if building ffmpeg), but the produced executable might not run on other CPUs.
+- `--tune`: Optimize for a specific CPU; unlike `--cpu` the produced binary should run on any x86_64 machine, but the gains aren't as profound.
 - `--clean`: Clean the sources directory; removes build artifacts. Recommended every once in a while as by default the build directories are not cleaned.
 - `-j/--jobs`: Number of parallel jobs; defaults to number of CPUs + 2. This value is used almost exclusively for `make` invocations. CMake and Meson based builds are not affected.
 
