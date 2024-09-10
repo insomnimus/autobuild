@@ -17,7 +17,8 @@ set -ue
 
 	# Passed to configure as --build
 	AB_BUILD_TRIPLE="$(gcc -dumpmachine 2>/dev/null || clang -dumpmachine 2>/dev/null || true)"
-	AB_CPU=sandybridge
+	AB_CPU=""
+	AB_TUNE=sandybridge
 
 	export AB_MINGW_SYSROOT=""
 	AB_MINGW_CRT=""
@@ -72,8 +73,8 @@ function show_help() {
 		  -l, --lib: Build a library recipe
 		  -O, --opt-level=0|1|2|3|s: Optimization level [default: $AB_OPT_LEVEL]
 		  --no-lto: Disable link time optimization
-		  --cpu=CPU: Optimize for the given CPU (accepts the same names as gcc -mtune=) [default: $AB_CPU]
-		  --use-march: Instead of using -mtune, use -march (may cause build errors and the produced executables may not run on other CPUs)
+		  --tune=CPU: Tune for a specific CPU (accepts the same names as gcc -mtune=) [default: $AB_TUNE if --cpu is not set]
+		  --cpu=CPU: Hard-optimize for the given CPU (accepts the same names as gcc -march=); this would produce executables that might not run on other CPUs, but can drastically be faster
 		  -j, --jobs=N: Maximum number of jobs while invoking make [default: $JOBS]
 		  --clean: Clean build artifacts (non destructive)
 		  -f, --force: Force a build even if the latest version of the recipe is installed
@@ -129,7 +130,7 @@ function err_exit() {
 	unset ARGV
 
 	no_lto=""
-	use_march=no
+	is_tune_set=0
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
 		-h | --help)
@@ -144,7 +145,6 @@ function err_exit() {
 			;;
 		--clean) clean=yes ;;
 		--no-lto) no_lto=yes ;;
-		--use-march) use_march=yes ;;
 		--cpu)
 			if ! shift; then
 				err_exit "--cpu requires a value but none was provided"
@@ -153,6 +153,16 @@ function err_exit() {
 			if [[ ! $AB_CPU =~ ^[a-zA-Z0-9][a-zA-Z0-9+_-]*$ ]]; then
 				err_exit "--cpu: value doesn't look like a valid cpu name: $AB_CPU"
 			fi
+			;;
+		--tune)
+			if ! shift; then
+				err_exit "--cpu requires a value but none was provided"
+			fi
+			AB_TUNE="$1"
+			if [[ ! $AB_TUNE =~ ^[a-zA-Z0-9][a-zA-Z0-9+_-]*$ ]]; then
+				err_exit "--tune: value doesn't look like a valid cpu name: $AB_TUNE"
+			fi
+			is_tune_set=1
 			;;
 		-O | --opt-level)
 			if ! shift; then
@@ -232,11 +242,16 @@ function err_exit() {
 	if [[ $no_lto ]]; then
 		BASE_FLAGS+=(x:-fno-lto)
 	fi
-	if [[ $use_march == yes ]]; then
+
+	if [[ -n $AB_CPU ]]; then
 		BASE_FLAGS+=(x:-march="$AB_CPU" r:-Ctarget-cpu="$AB_CPU")
+		if [[ $is_tune_set == 1 ]]; then
+			BASE_FLAGS+=(x:-mtune="$AB_TUNE")
+		fi
 	else
-		BASE_FLAGS+=(x:-mtune="$AB_CPU")
+		BASE_FLAGS+=(x:-mtune="$AB_TUNE")
 	fi
+
 	BASE_FLAGS+=("-O$AB_OPT_LEVEL")
 
 	if [[ -z $AB_ROOT ]]; then
