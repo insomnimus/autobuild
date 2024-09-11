@@ -1,0 +1,12 @@
+diff --git a/SPIRV/SpvBuilder.h b/SPIRV/SpvBuilder.h
+index 08057f4..10dd19f 100644
+--- a/SPIRV/SpvBuilder.h
++++ b/SPIRV/SpvBuilder.h
+@@ -47,6 +47,7 @@
+ #ifndef SpvBuilder_H
+ #define SpvBuilder_H
+ 
++#include <stdint.h>
+ #include "Logger.h"
+ #include "spirv.hpp"
+ #include "spvIR.h"
