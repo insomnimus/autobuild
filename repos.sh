@@ -107,6 +107,8 @@ declare -A AB_REPOS_GIT=(
 	[xeve]=master:https://github.com/mpeg5/xeve
 	[tlrc]=https://github.com/tldr-pages/tlrc
 	[pixz]=master:https://github.com/vasi/pixz.git
+	[kvazaar]=https://github.com/ultravideo/kvazaar.git
+	[modplug]=master:https://github.com/Konstanty/libmodplug.git
 )
 
 declare -A AB_REPOS_DIRECT=(

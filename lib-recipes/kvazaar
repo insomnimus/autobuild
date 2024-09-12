@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download kvazaar lib/libkvazaar.a
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS,TESTS}=OFF
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/kvazaar.pc" Cflags+=-DKVZ_STATIC_LIB

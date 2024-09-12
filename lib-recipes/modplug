@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+download modplug lib/libmodplug.a
+
+set_env
+
+# We use configure because cmake one doesn't install a .pc file
+configure_install_par
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/libmodplug.pc" Cflags+=-DMODPLUG_STATIC

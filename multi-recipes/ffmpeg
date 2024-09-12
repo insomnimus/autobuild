@@ -45,7 +45,7 @@ full=(
 	lib{fribidi,ilbc,mysofa,aribb24,bs2b,caca}
 	chromaprint
 	decklink:decklink-headers libcdio:cdio-paranoia
-	lib{flite,rist,gme}
+	lib{flite,rist,gme,kvazaar,modplug}
 	# libglslang
 	libshaderc
 	# ffmpeg wants rubberband >= v1.8.1, but latest is 3.x (too new)
