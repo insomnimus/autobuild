@@ -100,11 +100,35 @@ pub fn run(x: Gh, c: Agent) -> VersionResult {
 		return version_result(resp.tag_name, Url::parse(&resp.tarball_url)?);
 	};
 
+	// This is for when filter is Filter::File.
+	// This is to avoid selecting files that look like versions, but aren't; e.g. cmake-3.30.3-linux-aarch64.tar.gz
+	// But only if there's a file that doesn't have a "extra" string attached to the version.
+	let mut version = Version::MIN;
+	let mut asset = None;
+
 	for a in resp.assets {
+		if let Filter::File { name } = &filter {
+			let Some((v, _)) = super::extract_version(&a.name, name) else {
+				continue;
+			};
+
+			if v.is_basic() {
+				return version_result(resp.tag_name, a.browser_download_url);
+			} else if v > version {
+				version = v;
+				asset = Some(a);
+			}
+			continue;
+		}
+
 		if filter.is_match(&a.name) {
 			return version_result(resp.tag_name, a.browser_download_url);
 		}
 	}
 
-	Err(NotFound.into())
+	if let Some(a) = asset {
+		version_result(resp.tag_name, a.browser_download_url)
+	} else {
+		Err(NotFound.into())
+	}
 }

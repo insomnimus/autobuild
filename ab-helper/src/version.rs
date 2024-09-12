@@ -117,6 +117,10 @@ impl Version {
 		}
 	}
 
+	pub const fn is_basic(&self) -> bool {
+		matches!(self.extra, Extra::None)
+	}
+
 	pub fn is_pre(&self) -> bool {
 		!matches!(self.extra, Extra::None | Extra::Rev(_))
 	}

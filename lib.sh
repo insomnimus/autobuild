@@ -430,6 +430,14 @@ function cmake_install() {
 	run cmake --install .
 }
 
+function cmake_build() {
+	set -ue
+	local path="$1"
+	shift
+	run_cmake "$path" "$@"
+	run cmake --build . --config Release
+}
+
 function run_configure() {
 	set -ue
 	local path="$1"
