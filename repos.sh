@@ -186,6 +186,7 @@ declare -A AB_REPOS_HTTP=(
 	[giflib]=sf:'giflib -d!*'
 	[lame]=sf:lame
 	[mng]=sf:'libmng --dir=libmng-devel'
+	[mpg123]=sf:mpg123
 	["opencore-amr"]=sf:opencore-amr
 	[png]=sf:'libpng -dlibpng*'
 	[twolame]=sf:twolame

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+download mpg123 lib/libmpg123.a
+
+set_env
+
+configure_install_par \
+	--disable-modules \
+	lib:--disable-programs \
+	app:--enable-programs \
+	--enable-lib{mpg,out,syn}123 \
+	--with-audio=win32,win32_wasapi \
+	--with-default-audio=win32_wasapi \
+	--with-network=wininethttp
+
+out "$AB_PREFIX"/bin/{mpg,out}123.exe

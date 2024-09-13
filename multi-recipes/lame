@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+download lame lib/libmp3lame.a
+install_lib iconv app:mpg123
+
+if [[ $APP ]]; then
+	apply_patches -Np1
+fi
+
+set_env
+
+configure_install_par \
+	--enable-{nasm,expopt} \
+	--disable-{maintainer-mode,gtktest,analyzer-hooks,debug} \
+	app:--enable-frontend \
+	lib:--disable-frontend \
+	--with-libiconv-prefix="$AB_PREFIX"
+
+out "$AB_PREFIX"/bin/lame.exe
