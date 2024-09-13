@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+download uavs3d lib/libuavs3d.a
+
+set_env
+mkcd autobuild
+cmake_install ..

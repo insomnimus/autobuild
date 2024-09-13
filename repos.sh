@@ -109,6 +109,12 @@ declare -A AB_REPOS_GIT=(
 	[pixz]=master:https://github.com/vasi/pixz.git
 	[kvazaar]=https://github.com/ultravideo/kvazaar.git
 	[modplug]=master:https://github.com/Konstanty/libmodplug.git
+	[xavs2]=https://github.com/pkuvcl/xavs2.git
+	[davs2]=https://github.com/pkuvcl/davs2.git
+	[uavs3d]=master:https://github.com/uavs3/uavs3d.git
+	[vvenc]=https://github.com/fraunhoferhhi/vvenc.git
+	[vvdec]=https://github.com/fraunhoferhhi/vvdec.git
+	[lc3]=https://github.com/google/liblc3.git
 )
 
 declare -A AB_REPOS_DIRECT=(

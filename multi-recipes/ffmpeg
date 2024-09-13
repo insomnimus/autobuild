@@ -46,7 +46,11 @@ full=(
 	chromaprint
 	decklink:decklink-headers libcdio:cdio-paranoia
 	lib{flite,rist,gme,kvazaar,modplug}
-	# libglslang
+	lib{xavs2,davs2,uavs3d}
+	# These aren't available as of ffmpeg 7.0.2
+	# But are in the master branch
+	# lib{vvenc,vvdec}
+
 	libshaderc
 	# ffmpeg wants rubberband >= v1.8.1, but latest is 3.x (too new)
 )
@@ -104,6 +108,12 @@ if [[ $FFMPEG == full ]]; then
 fi
 
 LDFLAGS+=" -l:libpthread.a $($CXX -print-file-name=libstdc++.a)"
+
+# -march seems to break ffmpeg consistently
+if [[ -n $AB_CPU ]]; then
+	CFLAGS="${CFLAGS/ -march="$AB_CPU"/}"
+	CXXFLAGS="${CXXFLAGS/ -march="$AB_CPU"/}"
+fi
 
 info "configuring ffmpeg"
 AB_CFLAGS="-O0 -fno-lto" run dash ./configure \

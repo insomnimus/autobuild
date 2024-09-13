@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download xavs2 lib/libxavs2.a
+
+# AB_TOOLCHAIN=gcc
+set_env x:-Wno-incompatible-pointer-types
+cd build/linux
+
+USE_DASH=0 configure_install_par \
+	--disable-cli \
+	--enable-pic \
+	--disable-avs

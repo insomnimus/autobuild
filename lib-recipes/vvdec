@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download vvdec lib/libvvdec.a
+
+set_env
+mkcd autobuild
+cmake_install .. \
+	-DCMAKE_CXX_COMPILER_AR="$AR" \
+	-DCMAKE_CXX_COMPILER_RANLIB="$RANLIB" \
+	-DVVDEC_INSTALL_VVDECAPP=OFF \
+	$(if [[ -n $AB_CPU ]]; then printf %s -DVVDEC_OPT_TARGET_ARCH="$AB_CPU"; fi)

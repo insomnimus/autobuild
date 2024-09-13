@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+download davs2 lib/libdavs2.a
+
+set_env
+cd build/linux
+
+USE_DASH=0 configure_install_par \
+	--disable-cli \
+	--enable-pic \
+	--disable-avs

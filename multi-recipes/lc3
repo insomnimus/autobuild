@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+download lc3 lib/liblc3.a
+
+set_env app:-l:libpthread.a
+
+build_tools=false
+if [[ $APP ]]; then
+	build_tools=true
+fi
+
+meson_install -Dtools="$build_tools"
+
+out "$AB_PREFIX"/bin/{dlc3,elc3}.exe
