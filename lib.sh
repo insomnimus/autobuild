@@ -111,7 +111,6 @@ function set_env() {
 		export CC=$m-gcc \
 			CXX=$m-g++ \
 			AR=$m-gcc-ar \
-			AS=$m-as \
 			WINDRES=$m-windres RC=$m-windres \
 			STRIP=$m-strip \
 			RANLIB=$m-gcc-ranlib \
@@ -128,7 +127,6 @@ function set_env() {
 			LD=ld.lld \
 			STRIP=ab-llvm-strip \
 			AR=llvm-ar \
-			AS=llvm-as \
 			NM=llvm-nm \
 			RANLIB=llvm-ranlib \
 			DLLTOOL=llvm-dlltool \
