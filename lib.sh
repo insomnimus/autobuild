@@ -9,7 +9,7 @@ AB_GCC_LIBS=()
 BASE_FLAGS=(
 	gcc:x:-fmax-errors=5
 	llvm:x:-ferror-limit=5
-	gcc:-fno-lto llvm:x:-flto
+	gcc:-fno-lto
 	# llvm:x:-Wl,--error-limit=10
 	-s p:-DNDEBUG
 	x:{-g0,-w}

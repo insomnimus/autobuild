@@ -45,8 +45,8 @@ full=(
 	lib{fribidi,ilbc,mysofa,aribb24,bs2b,caca}
 	chromaprint
 	decklink:decklink-headers libcdio:cdio-paranoia
-	lib{flite,rist,gme,kvazaar,modplug}
-	lib{xavs2,davs2,uavs3d}
+	lib{flite,rist,gme,modplug,kvazaar}
+	lib{uavs3d,xavs2,davs2}
 	# These aren't available as of ffmpeg 7.0.2
 	# But are in the master branch
 	# lib{vvenc,vvdec}
@@ -95,6 +95,16 @@ if [[ $FFMPEG != bare ]]; then
 	extra_libs+=(-liconv)
 fi
 
+# -march consistently causes problems with ffmpeg
+new_flags=()
+for a in "${BASE_FLAGS[@]}"; do
+	if [[ $a != x:-march=* ]]; then
+		new_flags+=("$a")
+	fi
+done
+
+BASE_FLAGS=("${new_flags[@]}")
+
 set_env \
 	-DLIBTWOLAME_STATIC \
 	x:-fno-lto \
@@ -108,12 +118,6 @@ if [[ $FFMPEG == full ]]; then
 fi
 
 LDFLAGS+=" -l:libpthread.a $($CXX -print-file-name=libstdc++.a)"
-
-# -march seems to break ffmpeg consistently
-if [[ -n $AB_CPU ]]; then
-	CFLAGS="${CFLAGS/ -march="$AB_CPU"/}"
-	CXXFLAGS="${CXXFLAGS/ -march="$AB_CPU"/}"
-fi
 
 info "configuring ffmpeg"
 AB_CFLAGS="-O0 -fno-lto" run dash ./configure \

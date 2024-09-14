@@ -72,9 +72,9 @@ function show_help() {
 		   You don't need to use it if you obtained mingw-w64 with your package manager
 		  -l, --lib: Build a library recipe
 		  -O, --opt-level=0|1|2|3|s: Optimization level [default: $AB_OPT_LEVEL]
-		  --no-lto: Disable link time optimization
+		  --lto: Enable link time optimizations; this can yield faster executables but the linking times and memory use  will grow. Note that LTO isn't always correct: due to the bugs in the compilers, it's more likely to break and produce executables that don't work right
 		  --tune=CPU: Tune for a specific CPU (accepts the same names as gcc -mtune=) [default: $AB_TUNE if --cpu is not set]
-		  --cpu=CPU: Hard-optimize for the given CPU (accepts the same names as gcc -march=); this would produce executables that might not run on other CPUs, but can drastically be faster
+		  --cpu=CPU: Hard-optimize for the given CPU (accepts the same names as gcc -march=); this would produce executables that might not run on other CPUs, but can be faster. Note that using this with --lto especially with ffmpeg (or its dependencies) is observed to create faulty executables
 		  -j, --jobs=N: Maximum number of jobs while invoking make [default: $JOBS]
 		  --clean: Clean build artifacts (non destructive)
 		  -f, --force: Force a build even if the latest version of the recipe is installed
@@ -129,7 +129,7 @@ function err_exit() {
 	set -- "${ARGV[@]}"
 	unset ARGV
 
-	no_lto=""
+	lto=0
 	is_tune_set=0
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
@@ -144,7 +144,7 @@ function err_exit() {
 			export AB_HELPER_VERBOSE="${AB_HELPER_VERBOSE:-1}"
 			;;
 		--clean) clean=1 ;;
-		--no-lto) no_lto=yes ;;
+		--lto) lto=1 ;;
 		--cpu)
 			if ! shift; then
 				err_exit "--cpu requires a value but none was provided"
@@ -239,8 +239,8 @@ function err_exit() {
 		exit 1
 	fi
 
-	if [[ $no_lto ]]; then
-		BASE_FLAGS+=(x:-fno-lto)
+	if [[ $lto == 1 ]]; then
+		BASE_FLAGS+=(x:-flto)
 	fi
 
 	if [[ -n $AB_CPU ]]; then
