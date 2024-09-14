@@ -7,6 +7,7 @@
 AB_HAVE_RUSTUP_WINDOWS_TARGET=0
 AB_GCC_LIBS=()
 BASE_FLAGS=(
+	r:-Clinker-flavor=gcc -Clinker=ab-clang
 	gcc:x:-fmax-errors=5
 	llvm:x:-ferror-limit=5
 	gcc:-fno-lto
@@ -549,14 +550,14 @@ function cargo_build() {
 	(
 		set -ue
 		ensure_rust_target
-		local rf=("-L:native=$AB_PREFIX/lib")
+		local rf=("-Lnative=$AB_PREFIX/lib")
 
 		local a
 		for a in "${AB_GCC_LIBS[@]}" "${BASE_FLAGS[@]}"; do
 			case "$a" in
 			r:*) rf+=("${a:2}") ;;
 			l:*) rf+=("-Clink-arg=${a:2}") ;;
-			-L?*) rf+=("-L:native=${a:2}") ;;
+			-L?*) rf+=("-Lnative=${a:2}") ;;
 			-l:*.a) rf+=("-l:static=${a:2:${#a}-5}") ;;
 			-l*) rf+=("-l:static=${a:2}") ;;
 			esac
@@ -627,14 +628,14 @@ function cargo_cinstall() {
 
 	(
 		set -ue
-		local rf=("-L:native=$AB_PREFIX/lib")
+		local rf=("-Lnative=$AB_PREFIX/lib")
 
 		local a
 		for a in "${AB_GCC_LIBS[@]}" "${BASE_FLAGS[@]}"; do
 			case "$a" in
 			r:*) rf+=("${a:2}") ;;
 			l:*) rf+=("-Clink-arg=${a:2}") ;;
-			-L?*) rf+=("-L:native=${a:2}") ;;
+			-L?*) rf+=("-Lnative=${a:2}") ;;
 			-l:*.a) rf+=("-l:static=${a:2:${#a}-5}") ;;
 			-l*) rf+=("-l:static=${a:2}") ;;
 			esac
