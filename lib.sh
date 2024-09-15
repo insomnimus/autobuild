@@ -7,7 +7,7 @@
 AB_HAVE_RUSTUP_WINDOWS_TARGET=0
 AB_GCC_LIBS=()
 BASE_FLAGS=(
-	r:-Clinker-flavor=gcc -Clinker=ab-clang
+	r:-Clinker-flavor=gcc r:-Clinker=ab-clang
 	gcc:x:-fmax-errors=5
 	llvm:x:-ferror-limit=5
 	gcc:-fno-lto
@@ -748,7 +748,7 @@ function set_flags() {
 			LDFLAGS+=" $a"
 			;;
 		*)
-			error "argument with invalid syntax passed to set_flazgs: $(printf %q "$a")"
+			error "argument with invalid syntax passed to set_flags: $(printf %q "$a")"
 			;;
 		esac
 	done
