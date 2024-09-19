@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+go_build_out yq.exe .

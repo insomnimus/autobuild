@@ -505,6 +505,29 @@ function configure_install_par() {
 	configure_install_jobs="$JOBS" configure_install "$@"
 }
 
+function go_build_out() {
+	set -ue
+	need_exec go
+
+	local exe="$1"
+	if ! shift; then
+		error "go_build_out: requires at least 2 arguments but only 1 was given"
+	fi
+
+	CC="${CC:-ab-clang}" \
+		CXX="${CXX:-ab-clang++}" \
+		CGO_CFLAGS="${CFLAGS:-"-O${AB_OPT_LEVEL:-2} -g0 ${AB_CPU:+-march=$AB_CPU} ${AB_TUNE:+-mtune=$AB_TUNE}"}" \
+		CGO_CXXFLAGS="${CXXFLAGS:-"-O${AB_OPT_LEVEL:-2} -g0 ${AB_CPU:+-march=$AB_CPU} ${AB_TUNE:+-mtune=$AB_TUNE}"}" \
+		GOOS=windows \
+		GOARCH=amd64 \
+		run go build \
+		-ldflags="-s -w -L $AB_PREFIX/lib" \
+		"$@"
+
+	# Stripping Go Windows binaries seems to break them
+	STRIP=: out "$exe"
+}
+
 function mkcd() {
 	local dir="${1:?autobuild error: missing required argument 1: directory}"
 	if [[ -n ${2:-} ]]; then

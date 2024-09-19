@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+need_exec go
+
+run go run ./script/build.go \
+	clean bin/gh.exe \
+	GOOS=windows \
+	GOARCH=amd64 \
+	CGO_ENABLED=0 \
+	GO_LDFLAGS="-w -s"
+
+STRIP=: out bin/gh.exe

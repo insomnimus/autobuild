@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+CGO_ENABLED=1 \
+	go_build_out usql.exe -tags all,static,no_duckdb .

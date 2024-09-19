@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+tags="$(git tag --list --sort=-v:refname)"
+while read -r tag; do
+	if [[ $tag =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)$ ]]; then
+		git checkout --quiet "$tag"
+		echo "$tag"
+		exit 0
+	fi
+done <<< "$tags"
+
+exit 1

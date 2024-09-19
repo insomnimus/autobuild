@@ -115,6 +115,15 @@ declare -A AB_REPOS_GIT=(
 	[vvenc]=https://github.com/fraunhoferhhi/vvenc.git
 	[vvdec]=https://github.com/fraunhoferhhi/vvdec.git
 	[lc3]=https://github.com/google/liblc3.git
+
+	# Go apps
+	[actionlint]=https://github.com/rhysd/actionlint.git
+	[gh]=https://github.com/cli/cli.git
+	[gofumpt]=https://github.com/mvdan/gofumpt.git
+	[shfmt]=https://github.com/mvdan/sh.git
+	[staticcheck]=https://github.com/dominikh/go-tools.git
+	[yq]=https://github.com/mikefarah/yq.git
+	[usql]=https://github.com/xo/usql.git
 )
 
 declare -A AB_REPOS_DIRECT=(
@@ -217,9 +226,9 @@ declare -A AB_REPOS_HTTP=(
 	[piper]=gh:rhasspy/piper
 	["piper-phonemize"]=gh:rhasspy/piper-phonemize
 	[sdl2]=gh:'libsdl-org/SDL SDL2'
+	[upx]=gh:'upx/upx -r ^upx-<version>-src<ext>$'
 	[vpl]=gh:intel/libvpl
 	[wavpack]=gh:'dbry/WavPack wavpack'
-	# [zlib]=gh:'madler/zlib zlib'
 	[zmq]=gh:'zeromq/libzmq zeromq'
 )
 

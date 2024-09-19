@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set_env -l:libpthread.a
+
+mkcd autobuild
+cmake_build .. \
+	-DBUILD_TESTING=OFF \
+	-DUPX_CONFIG_DISABLE_SELF_PACK_TEST=ON
+
+out upx.exe
