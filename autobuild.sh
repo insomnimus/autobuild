@@ -391,15 +391,22 @@ mkdir -p -- "$AB_INSTALL" "$AB_ROOT/logs" "$AB_DB" "$AB_SOURCES" "$AB_PREFIX" "$
 
 	if [[ $build_ab_helper == 1 ]]; then
 		info "building ab-helper for local use"
-		target_dir="${CARGO_TARGET_DIR:-"$AB_DIR/ab-helper/target"}"
-
-		CARGO_TARGET_DIR="$target_dir" run cargo build -r --manifest-path "$AB_DIR/ab-helper/Cargo.toml" || {
+		run cargo install --root="$AB_LOCAL" --force --path "$AB_DIR/ab-helper" || {
 			err_exit "failed to build required tool ab-helper; please verify that your rust toolchain is up to date and functional"
 		}
 
-		run cp -f "$target_dir/release/ab-helper" "$AB_LOCAL/bin/ab-helper"
+		# Clean the build directory for the user's sake.
 		cargo clean --manifest-path "$AB_DIR/ab-helper/Cargo.toml" &>/dev/null || true
 	fi
+
+	# Ensure wrapper symbolic links.
+	for a in ab-{clang,clang++,gcc,g++,lld,ld,pkg-config} x86_64-w64-mingw32-pkg-config; do
+		ln -sf ab-helper "$AB_LOCAL/bin/$a" || {
+			eprint "error: failed to create wrapper symbolic link $a in $AB_LOCAL/bin"
+			exit 1
+		}
+	done
+
 )
 
 export PATH="$AB_WRAPPERS:$AB_LOCAL/bin:${AB_MINGW_SYSROOT:+$AB_MINGW_SYSROOT/x86_64-w64-mingw32}:$PATH"

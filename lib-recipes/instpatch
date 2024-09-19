@@ -3,7 +3,7 @@
 download instpatch lib/libinstpatch-2.a
 install_lib sndfile glib
 
-set_env llvm:x:--ld-path="$AB_WRAPPERS/ab-lld" -DFLAC__NO_DLL -l:libvorbisenc.a
+set_env llvm:x:--ld-path="$AB_LOCAL/bin/ab-lld" -DFLAC__NO_DLL -l:libvorbisenc.a
 
 append_pkgconfig sndfile flac ogg opus vorbis gobject-2.0 glib-2.0
 export AB_LDFLAGS="$LDFLAGS $AB_PREFIX/lib/libFLAC.a"

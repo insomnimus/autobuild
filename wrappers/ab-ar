@@ -1,3 +1,4 @@
 #!/usr/bin/env dash
 
+set -f
 exec ${AB_AR:?} "$@"

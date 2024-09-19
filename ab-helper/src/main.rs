@@ -9,8 +9,12 @@ mod merge_dir;
 mod template;
 mod toml;
 mod version;
+mod wrapper;
 
-use std::env;
+use std::{
+	env,
+	path::PathBuf,
+};
 
 use clap::Parser as Clap;
 use log::Level;
@@ -41,7 +45,44 @@ enum Cmd {
 	Version,
 }
 
+fn handle_wrapper() {
+	let mut argv = env::args_os();
+	// argv[0] is more useful here as current_exe seems to get the resolved path on Linux.
+	let exe = argv
+		.next()
+		.map(PathBuf::from)
+		.or_else(|| env::current_exe().ok());
+
+	let Some(exe) = exe
+		.as_deref()
+		.and_then(|p| {
+			if cfg!(windows) {
+				p.file_stem()
+			} else {
+				p.file_name()
+			}
+		})
+		.and_then(|s| s.to_str())
+	else {
+		return;
+	};
+
+	match exe {
+		"ab-clang" => wrapper::exec_clang(argv),
+		"ab-clang++" => wrapper::exec_clangxx(argv),
+		"ab-gcc" => wrapper::exec_gcc(argv),
+		"ab-g++" => wrapper::exec_gxx(argv),
+		"ab-lld" => wrapper::exec_lld(argv),
+		"ab-ld" => wrapper::exec_ld(argv),
+		"ab-pkg-config" | "x86_64-w64-mingw32-pkg-config" => wrapper::exec_pkg_config(argv),
+		_ => (),
+	}
+}
+
 fn main() {
+	// If this executable is named ab-clang, ab-gcc etc, wrap them instead.
+	handle_wrapper();
+
 	fn run() -> anyhow::Result<()> {
 		let args = App::parse();
 

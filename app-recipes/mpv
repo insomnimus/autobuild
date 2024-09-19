@@ -16,7 +16,7 @@ sed -i "s/dependency('spirv\\-cross\\-c\\-shared'/dependency('spirv-cross-c'/g" 
 set_env \
 	-DLIBARCHIVE_STATIC \
 	link:"$AB_PREFIX/lib/libiconv.a" \
-	llvm:x:--ld-path="$AB_WRAPPERS/ab-lld"
+	llvm:x:--ld-path="$AB_LOCAL/bin/ab-lld"
 
 prepend_custom_prefix "$ffmpeg_prefix"
 
