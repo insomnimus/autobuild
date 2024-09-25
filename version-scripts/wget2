@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ue
+
 git checkout -q f4e7c46073850af7b5c3d58b9452bdd2124b593c
 current="$(latest_git_tag)"
 since_last="$(git rev-list --count HEAD)"

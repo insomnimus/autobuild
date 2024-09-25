@@ -115,6 +115,8 @@ declare -A AB_REPOS_GIT=(
 	[vvenc]=https://github.com/fraunhoferhhi/vvenc.git
 	[vvdec]=https://github.com/fraunhoferhhi/vvdec.git
 	[lc3]=https://github.com/google/liblc3.git
+	["opus-tools"]=master:https://github.com/xiph/opus-tools.git
+	[opusenc]=https://github.com/xiph/libopusenc.git
 
 	# Go apps
 	[actionlint]=https://github.com/rhysd/actionlint.git
@@ -138,7 +140,6 @@ declare -A AB_REPOS_DIRECT=(
 	[openldap]=https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.6.6.tgz
 	[kerberos]=https://kerberos.org/dist/krb5/1.21/krb5-1.21.2.tar.gz
 	[jpeg]=http://ijg.org/files/jpegsr9e.zip
-	# [boost]=https://boostorg.jfrog.io/artifactory/main/release/1.84.0/source/boost_1_84_0.tar.bz2
 	[gnurx]=https://downloads.sourceforge.net/mingw/Other/UserContributed/regex/mingw-regex-2.5.1/mingw-libgnurx-2.5.1-src.tar.gz
 	[fftw]=https://fftw.org/fftw-3.3.10.tar.gz
 	[gsm]=https://www.quut.com/gsm/gsm-1.0.22.tar.gz
@@ -151,9 +152,11 @@ declare -A AB_REPOS_DIRECT=(
 declare -A AB_REPOS_HTTP=(
 	# Single projects
 	[sqlite3]=sqlite:--
-	[boost]=boost:-
+	# [boost]=boost:
 
 	#MSYS2 binary packages
+	[boost]=msys:boost
+	[icu]=msys:icu
 	[id3lib]=msys:id3lib
 	[openmp]=msys:llvm-openmp
 	[readline]=msys:readline
@@ -212,7 +215,6 @@ declare -A AB_REPOS_HTTP=(
 	[flite]=gh:festvox/flite
 	[glslang]=gh:KhronosGroup/glslang
 	[gme]=gh:libgme/game-music-emu
-	[icu]=gh:'unicode-org/icu -r ^icu4c-\d+(_\d+)?\-src<ext>$'
 	[leptonica]=gh:'DanBloomberg/leptonica leptonica'
 	[lz4]=gh:'lz4/lz4 lz4'
 	[nghttp2]=gh:'nghttp2/nghttp2 nghttp2'

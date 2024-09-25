@@ -3,7 +3,7 @@
 download flac lib/libFLAC.a
 install_lib ogg
 
-set_env gcc:-fno-lto -DFLAC__NO_DLL
+set_env gcc:-fno-lto p:-DFLAC__NO_DLL
 
 mkcd autobuild
 cmake_install .. \
@@ -16,5 +16,8 @@ cmake_install .. \
 	-DWITH_OGG=ON \
 	-DOGG_INCLUDE_DIR="$AB_PREFIX/include" \
 	-DOGG_LIBRARY="$AB_PREFIX/lib/libogg.a"
+
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/flac.pc" Cflags+=-DFLAC__NO_DLL
+edit-pc -p "$AB_PREFIX/lib/pkgconfig/flac++.pc" Cflags+=-DFLAC__NO_DLL
 
 out "$AB_PREFIX/bin/"{flac,metaflac}.exe

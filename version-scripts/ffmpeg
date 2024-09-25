@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ue
+
 output="$(git tag --list --sort=-v:refname 'n*.*')"
 
 while read -r s; do

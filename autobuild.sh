@@ -480,7 +480,7 @@ function execute_recipe() {
 		set -ue
 		install_lib dlfcn winpthreads
 		PATCHES="$AB_DIR/patches/$RECIPE"
-		LIB_ID=""
+		LIB_ID="${LIB_ID:-}"
 		if [[ -f "$AB_DIR/app-recipes/$RECIPE" ]]; then
 			. "$AB_DIR/app-recipes/$RECIPE"
 		else

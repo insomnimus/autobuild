@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
+# Boost is incredibly annoying to cross compile, so we just download the msys archive.
+download boost lib/libboost_url.a
+install_lib bzip2 xz zstd zlib icu
+msys_install
+exit 0
+
+## Legacy code ##
+AB_TOOLCHAIN=gcc
 check=libboost_url.a
-if [[$AB_TOOLCHAIN == llvm ]]; then
+if [[ $AB_TOOLCHAIN == llvm ]]; then
 	check=libboost_url.lib
 fi
 

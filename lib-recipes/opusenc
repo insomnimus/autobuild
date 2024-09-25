@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download opusenc lib/libopusenc.a
+install_lib opus
+
+set_env
+
+configure_install_par \
+	--disable-{examples,doc}

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+install_lib flac opus ogg opusfile opusenc
+
+set_env p:-DFLAC__NO_DLL
+
+configure_build_par \
+	--disable-{oggtest,opustest,opusfiletest,libopusenctest}
+
+out opus{dec,enc,info,rtp}.exe

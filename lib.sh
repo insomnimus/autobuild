@@ -957,14 +957,15 @@ function download() {
 	elif [[ ! (-f "$AB_DIR/lib-recipes/$recipe" || -f "$AB_DIR/multi-recipes/$recipe" || -f "$AB_DIR/app-recipes/$recipe") ]]; then
 		error "no build script found for $recipe"
 	fi
-	local args=("${@:3}")
 
+	local args=("${@:3}")
 	local val
 	if [[ -n ${AB_REPOS_SHIM["$recipe"]:-} ]]; then
 		recipe="${AB_REPOS_SHIM["$recipe"]}"
 	fi
 	# shellcheck disable=SC2034
 	PATCHES="$AB_DIR/patches/$recipe"
+
 	# Try in order
 	local val
 	val="${AB_REPOS_DIRECT["$recipe"]:-}"

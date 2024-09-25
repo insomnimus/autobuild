@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+download icu lib/libicudt.a
+msys_install
