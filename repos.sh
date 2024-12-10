@@ -19,7 +19,6 @@ declare -A AB_REPOS_GIT=(
 	[flac]=https://gitlab.xiph.org/xiph/flac
 	[ffmpeg]=https://github.com/FFmpeg/FFmpeg
 	[mpv]=https://github.com/mpv-player/mpv
-	[fluidsynth]=https://github.com/FluidSynth/fluidsynth
 	[jq]=https://github.com/jqlang/jq
 	[aria2]=https://github.com/aria2/aria2
 	[mujs]=git://git.ghostscript.com/mujs.git
@@ -129,6 +128,7 @@ declare -A AB_REPOS_GIT=(
 )
 
 declare -A AB_REPOS_DIRECT=(
+	[sqlite3]=3.45.2::https://www.sqlite.org/2024/sqlite-src-3450200.zip
 	[fontconfig]=2.15.0::https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz
 	[libressl]=3.1.1::https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.1.1.tar.gz
 	[winpthreads]=v6.0.1::https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v6.0.1.tar.bz2/download
@@ -151,7 +151,7 @@ declare -A AB_REPOS_DIRECT=(
 
 declare -A AB_REPOS_HTTP=(
 	# Single projects
-	[sqlite3]=sqlite:--
+	# [sqlite3]=sqlite:--
 	# [boost]=boost:
 
 	#MSYS2 binary packages
@@ -213,6 +213,7 @@ declare -A AB_REPOS_HTTP=(
 	[curl]=gh:'curl/curl curl'
 	[expat]=gh:'libexpat/libexpat expat'
 	[flite]=gh:festvox/flite
+	[fluidsynth]=gh:FluidSynth/fluidsynth
 	[glslang]=gh:KhronosGroup/glslang
 	[gme]=gh:libgme/game-music-emu
 	[leptonica]=gh:'DanBloomberg/leptonica leptonica'
