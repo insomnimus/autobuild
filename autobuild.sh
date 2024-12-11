@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#shellcheck disable=SC1090
 set -ue
 
 # Variables
@@ -84,13 +85,14 @@ function show_help() {
 		  --rust-build-std: Build the Rust standard library from source for Rust programs (may improve performance and reduce binary size at the expense of compilation time)
 		    This will install the unstable toolchain and the rust-src component with rustup if it's missing
 		    This is experimental and might fail to build
-		  -h, --help: Show this message and exit
 		  -H, --hook=COMMAND: Run COMMAND if an app recipe completes and creates an archive
 		   The following environment variables will be set for the command:
 		   \$RECIPE: The name of the recipe as provided to this script
 		   \$VERSION: The version string or git tag of the app that was built
 			\$ARCHIVE_PATH: Full path to the generated release archive
 		   COMMAND will be executed as if typed on a Bash prompt
+		  --list: List available app/multi recipes
+		  -h, --help: Show this message and exit
 	END
 }
 
@@ -136,6 +138,12 @@ function err_exit() {
 		-h | --help)
 			show_help
 			exit
+			;;
+		--list)
+			for a in "$AB_DIR"/{app-recipes,multi-recipes}/*; do
+				basename -- "$a"
+			done | exec sort
+			exit 0
 			;;
 		-l | --lib) build_lib=yes ;;
 		-f | --force) force=yes ;;
@@ -361,6 +369,7 @@ fi
 {
 	s="$(x86_64-w64-mingw32-gcc -print-search-dirs | grep ^libraries:)"
 	s="${s#libraries: =}"
+	paths=()
 	split paths "$s" ":"
 	for p in "${paths[@]}"; do
 		if [[ -e $p ]]; then

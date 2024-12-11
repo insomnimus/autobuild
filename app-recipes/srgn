@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bin srgn
+out target/x86_64-pc-windows-gnu/release/srgn.exe

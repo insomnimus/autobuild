@@ -122,8 +122,6 @@ function set_env() {
 		;;
 
 	llvm)
-		# export CC="clang $x" \
-		# CXX="clang++ $x" \
 		export CC=ab-clang CXX=ab-clang++ \
 			LD=ld.lld \
 			STRIP=ab-llvm-strip \
@@ -603,11 +601,26 @@ function cargo_build() {
 			build_std+=",panic_abort"
 		fi
 
+		{
+			AB_TOOLCHAIN=llvm
+			set_env
+			export TARGET_CC="${CC}" \
+				TARGET_CXX="${CXX}" \
+				TARGET_LD="${LD}" \
+				TARGET_CFLAGS="${CFLAGS}" \
+				TARGET_CXXFLAGS="${CXXFLAGS}" \
+				TARGET_CPPFLAGS="${CPPFLAGS}" \
+				TARGET_RANLIB="${RANLIB}" \
+				TARGET_RC="${RC}"
+
+			unset CC CXX LD CFLAGS CXXFLAGS CPPFLAGS RANLIB RC
+		}
+
 		RUSTFLAGS="${rf[*]}" \
 			AR=llvm-ar \
+			TARGET_AR=llvm-ar \
 			PKG_CONFIG_ALLOW_CROSS_x86_64_pc_windows_gnu=1 \
 			PKG_CONFIG_x86_64_pc_windows_gnu=ab-pkg-config \
-			TARGET_CC=ab-clang \
 			run cargo "+$toolchain" rustc \
 			$release \
 			$build_std \
@@ -674,13 +687,12 @@ function cargo_cinstall() {
 
 		local toolchain=nightly
 		# cargo-c fails with build-std for mysterious reasons
-		# local build_std="-Zbuild-std=std,core,alloc"
+		local build_std="-Zbuild-std=std,core,alloc"
 		if [[ $AB_RUST_BUILD_STD == 0 ]]; then
 			toolchain=stable
-			# build_std=""
+			build_std=""
 		elif [[ $AB_RUST_PANIC == abort ]]; then
-			: noop
-			# build_std+=",panic_abort"
+			build_std+=",panic_abort"
 		fi
 
 		RUSTFLAGS="${rf[*]}" \
@@ -690,6 +702,7 @@ function cargo_cinstall() {
 			TARGET_CC=ab-clang \
 			run cargo "+$toolchain" cinstall \
 			$release \
+			$build_std \
 			--lib \
 			--library-type=staticlib \
 			--prefix="$AB_PREFIX" \

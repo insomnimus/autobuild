@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cargo_build --bin=miniserve
+out target/x86_64-pc-windows-gnu/release/miniserve.exe
