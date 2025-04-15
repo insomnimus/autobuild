@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -ue
+
+tags="$(git tag --sort=-taggerdate)"
+while read -r tag; do
+	if [[ $tag =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		git checkout --quiet "$tag"
+		echo "$tag"
+		exit
+	fi
+done <<<"$tags"
+
+exit 1
