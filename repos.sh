@@ -129,7 +129,7 @@ declare -A AB_REPOS_GIT=(
 	[shfmt]=https://github.com/mvdan/sh.git
 	[staticcheck]=https://github.com/dominikh/go-tools.git
 	[yq]=https://github.com/mikefarah/yq.git
-	[usql]=https://github.com/xo/usql.git
+	[usql]="https://github.com/xo/usql.git sort=version"
 )
 
 declare -A AB_REPOS_DIRECT=(
