@@ -136,6 +136,7 @@ declare -A AB_REPOS_GIT=(
 
 declare -A AB_REPOS_DIRECT=(
 	[sqlite3]=3.45.2::https://www.sqlite.org/2024/sqlite-src-3450200.zip
+	[sdl2]=2.32.4::https://github.com/libsdl-org/SDL/releases/download/release-2.32.4/SDL2-2.32.4.tar.gz
 	[fontconfig]=2.15.0::https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz
 	[libressl]=3.1.1::https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.1.1.tar.gz
 	[winpthreads]=v6.0.1::https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v6.0.1.tar.bz2/download
@@ -236,7 +237,6 @@ declare -A AB_REPOS_HTTP=(
 	[pcaudiolib]=gh:'espeak-ng/pcaudiolib pcaudiolib'
 	[piper]=gh:rhasspy/piper
 	["piper-phonemize"]=gh:rhasspy/piper-phonemize
-	[sdl2]=gh:'libsdl-org/SDL SDL2'
 	[sdl3]=gh:'libsdl-org/SDL SDL3'
 	[srgn]=gh:alexpovel/srgn
 	[upx]=gh:'upx/upx -r ^upx-<version>-src<ext>$'
