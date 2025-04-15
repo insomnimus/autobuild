@@ -3,12 +3,28 @@
 download idn2 lib/libidn2.a
 install_lib iconv unistring
 
-set_env -fno-lto -l:libunistring.a -DIN_LIBUNISTRING -DIDN2_STATIC
+set_env -fno-lto -l:libunistring.a -DIDN2_STATIC
 
 # AUTOPOINT=true run autoreconf -fi
-run touch unistring/unistr/unistring-notinline.h
+
+# run_configure \
+# --enable-{year2038,largefile} \
+# --disable-{valgrind-tests,fuzzing,cfi,ubsan,asan,rpath,nls,code-coverage,gcc-warnings,doc} \
+# --with-libiconv-prefix="$AB_PREFIX"} \
+# --with-included-libunistring
+
+# run ./bootstrap
+# AUTOPOINT=true run autoreconf -fi
+./bootstrap || {
+	run touch unistring/unistr/unistring-notinline.h unistring/Makefile.in
+	echo -e 'all:\ninstall:\n' >unistring/Makefile.in
+	ln -s "$AB_PREFIX/lib/libunistring.la" unistring/libunistring.la
+}
+
+run ./bootstrap
 
 configure_install_par \
 	--enable-{year2038,largefile} \
 	--disable-{valgrind-tests,fuzzing,cfi,ubsan,asan,rpath,nls,code-coverage,gcc-warnings,doc} \
-	--with-{gnu-ld,{libiconv,libunistring}-prefix="$AB_PREFIX"}
+	--with-{libiconv,libunistring}-prefix="$AB_PREFIX"} \
+	--without-included-libunistring
