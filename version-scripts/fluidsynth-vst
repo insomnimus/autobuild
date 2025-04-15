@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+git --no-pager \
+	log -1 \
+	--pretty="format:%cd" \
+	--date="format:%Y.%m.%d+%H-%M-%S"

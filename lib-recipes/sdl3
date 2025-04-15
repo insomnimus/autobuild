@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+download sdl3 lib/libsdl3.a
+install_lib iconv vulkan
+
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DPKG_CONFIG_ARGN=--static \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DSDL_VULKAN=ON

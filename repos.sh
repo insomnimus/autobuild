@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 declare -A AB_REPOS_GIT=(
+	[faust]=https://github.com/grame-cncm/faust.git
 	["cargo-binutils"]=https://github.com/rust-embedded/cargo-binutils.git
 	["cargo-clone"]=https://github.com/JanLikar/cargo-clone
 	["cargo-edit"]=https://github.com/killercup/cargo-edit
@@ -130,6 +131,7 @@ declare -A AB_REPOS_GIT=(
 	[staticcheck]=https://github.com/dominikh/go-tools.git
 	[yq]=https://github.com/mikefarah/yq.git
 	[usql]="https://github.com/xo/usql.git sort=version"
+	["fluidsynth-vst"]=master:https://github.com/AZSlow3/FluidSynthVST.git
 )
 
 declare -A AB_REPOS_DIRECT=(
@@ -158,6 +160,7 @@ declare -A AB_REPOS_HTTP=(
 	# Single projects
 	# [sqlite3]=sqlite:--
 	# [boost]=boost:
+	["vst3-sdk"]=vst3-sdk:
 
 	#MSYS2 binary packages
 	[boost]=msys:boost
@@ -234,6 +237,7 @@ declare -A AB_REPOS_HTTP=(
 	[piper]=gh:rhasspy/piper
 	["piper-phonemize"]=gh:rhasspy/piper-phonemize
 	[sdl2]=gh:'libsdl-org/SDL SDL2'
+	[sdl3]=gh:'libsdl-org/SDL SDL3'
 	[srgn]=gh:alexpovel/srgn
 	[upx]=gh:'upx/upx -r ^upx-<version>-src<ext>$'
 	[vpl]=gh:intel/libvpl

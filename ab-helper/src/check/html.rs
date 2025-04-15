@@ -30,7 +30,7 @@ pub trait NodeExt {
 	}
 
 	fn is_class(&self, class: &str) -> bool {
-		self.attr_filter("class").map_or(false, |s| {
+		self.attr_filter("class").is_some_and(|s| {
 			s.split_ascii_whitespace()
 				.any(|s| s.eq_ignore_ascii_case(class))
 		})
@@ -93,7 +93,7 @@ impl NodeExt for NodeRef {
 
 	fn is(&self, tag: &str) -> bool {
 		self.as_element()
-			.map_or(false, |e| e.name.local.eq_str_ignore_ascii_case(tag))
+			.is_some_and(|e| e.name.local.eq_str_ignore_ascii_case(tag))
 	}
 
 	fn next_element(&self) -> Option<NodeRef> {

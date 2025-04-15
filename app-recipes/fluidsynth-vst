@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+install_lib fluidsynth glib vst3-sdk
+
+set_env
+mkcd autobuild
+cmake_build ..

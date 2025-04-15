@@ -2,7 +2,7 @@
 
 download fluidsynth lib/libfluidsynth.a
 # NOTE: Do not enable sdl2; it makes fluidsynth a windows gui program, which is dysfunctional.
-install_lib sndfile glib instpatch readline
+install_lib sndfile glib instpatch readline sdl3
 
 set_env \
 	-DFLAC__NO_DLL

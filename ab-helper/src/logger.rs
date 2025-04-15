@@ -22,7 +22,7 @@ impl Log for Logger {
 
 	fn log(&self, r: &Record) {
 		if self.enabled(r.metadata())
-			&& r.module_path().map_or(false, |m| {
+			&& r.module_path().is_some_and(|m| {
 				m == env!("CARGO_CRATE_NAME")
 					|| m.starts_with(concat!(env!("CARGO_CRATE_NAME"), "::"))
 			}) {

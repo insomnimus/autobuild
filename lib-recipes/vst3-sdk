@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+error "this recipe is a work in progress"
+download vst3-sdk . vst3sdk
+install_lib fontconfig freetype
+
+set_env
+
+shopt -s globstar
+run sed -ri 's/if\(msvc\)/if(WIN32)/gi' **/CMakeLists.txt
+# vstgui4/vstgui/standalone/CMakeLists.txt
+mkcd autobuild
+cmake_build .. \
+	-DPKG_CONFIG_ARGN=--static \
+	-D{SMTG_RUN_VST_VALIDATOR,SMTG_ENABLE_VST3_PLUGIN_EXAMPLES,SMTG_ENABLE_VST3_HOSTING_EXAMPLES,SMTG_CREATE_PLUGIN_LINK}=OFF

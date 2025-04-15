@@ -10,6 +10,7 @@ mod openbsd;
 mod prelude;
 mod sf;
 mod sqlite;
+mod vst3sdk;
 
 use std::{
 	fmt,
@@ -184,6 +185,7 @@ enum Cmd {
 	OpenBsd(openbsd::OpenBsd),
 	Sf(sf::Sf),
 	Sqlite(sqlite::Sqlite),
+	Vst3Sdk(vst3sdk::Vst3Sdk),
 }
 
 pub fn run(args: Check) -> Result<()> {
@@ -199,6 +201,7 @@ pub fn run(args: Check) -> Result<()> {
 		Cmd::Sqlite(x) => sqlite::run(x)?,
 		Cmd::Boost(x) => boost::run(x, c)?,
 		Cmd::OpenBsd(x) => openbsd::run(x, c, args.allow_pre)?,
+		Cmd::Vst3Sdk(x) => vst3sdk::run(x, c)?,
 	};
 
 	println!("{url}\n{version}");
