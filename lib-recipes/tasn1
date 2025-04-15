@@ -21,6 +21,8 @@ export CC="$PWD/wrap-cc"
 echo -e 'all:\ninstall:\ndoc:' >fuzz/Makefile.am
 echo -e 'all:\ninstall:\ndoc:' >fuzz/Makefile.in
 
+run ./bootstrap --force
+
 configure_install_par \
 	--disable-{doc,valgrind-tests,code-coverage,fuzzing} \
 	--enable-year2038 \
