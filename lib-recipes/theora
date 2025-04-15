@@ -5,11 +5,9 @@ install_lib ogg
 
 set_env
 
-# Note: autogen.sh calls configure for some reason.
-run_configure autogen.sh \
-	--disable-{dependency-tracking,doc,valgrind-testing,oggtest,vorbistest,telemetry,examples} \
+run ./autogen.sh
+
+configure_install_par \
+	--disable-{doc,valgrind-testing,oggtest,vorbistest,telemetry,examples} \
 	--with-{gnu-ld,ogg="$AB_PREFIX"} \
 	llvm:--disable-asm
-
-run make -j$JOBS
-run make install
