@@ -2,21 +2,18 @@
 
 download vpx lib/libvpx.a
 
-set_env
+set_env c:-fno-asynchronous-unwind-tables
+
+export LD="$CC"
 
 # Note: This isn't a standard configure script.
 run ./configure \
 	--prefix="$AB_PREFIX" \
 	--enable-static --disable-shared \
 	--target=x86_64-win64-gcc \
-	--extra-cflags="$CFLAGS" --extra-cxxflags="$CXXFLAGS" \
-	--disable-{dependency-tracking,debug,gprof,gcov,install-docs,install-bins,examples,tools,docs,unit-tests,decode-perf-tests,encode-perf-tests} \
-	--enable-{libs,install-libs} \
-	--enable-{vp9-highbitdepth,better-hw-compatibility,vp8,vp9,postproc,vp9-postproc,error-concealment,runtime-cpu-detect} \
-	--enable-{multi-res-encoding,vp9-temporal-denoising,webm-io} \
-	--enable-{vp8,vp9}
+	--enable-{vp8,vp9,vp9-highbitdepth,vp9-temporal-denoising,runtime-cpu-detect,postproc,pic,experimental} \
+	--disable-{debug,gprof,docs,gcov,install-docs,install-bins,examples,tools,docs,unit-tests,decode-perf-tests,encode-perf-tests}
 
-# --cpu=skylake \
 run make -j$JOBS
 
 if [[ ! -e libvpx.a ]]; then
