@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 download idn2 lib/libidn2.a
+# On aarch64, the build process tries to execute windows executables, which fails. So we just use msys here.
 msys_install
 exit 0
 
