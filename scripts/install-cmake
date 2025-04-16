@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -ue
+
+function on_error() {
+	if [[ -n ${dir:-} ]]; then
+		rm -rf -- "$dir" || true
+		exit 1
+	fi
+}
+
+trap on_error ERR
+
+# The script will exit if any of these variables are undefined
+: "$AB_ROOT" "$JOBS"
+
+dir="$(mktemp -d autobuild_cmake_XXXXX --tmpdir)"
+cd -- "$dir"
+
+echo "cloning CMake"
+git clone --quiet --depth 1 --branch v3.31.7 --single-branch https://github.com/Kitware/CMake cmake
+cd cmake
+
+echo "bootstrapping CMake..."
+./bootstrap --prefix="$AB_ROOT/local"
+
+echo "building CMake..."
+make -j"$JOBS"
+
+echo "installing CMake..."
+make install
+
+echo "successfully installed CMake to $AB_ROOT/local"
+
+rm -rf -- "$dir" || true
