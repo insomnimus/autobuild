@@ -8,5 +8,6 @@ set_env
 
 mkcd autobuild
 cmake_install ../source \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	-DENABLE_{ASSEMBLY,SVT_HEVC}=ON \
 	-DENABLE_{CLI,LIBNUMA,SHARED,TESTS}=OFF

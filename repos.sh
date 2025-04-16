@@ -86,9 +86,9 @@ declare -A AB_REPOS_GIT=(
 	[placebo]="https://code.videolan.org/videolan/libplacebo sort=version"
 	[xxhash]=https://github.com/Cyan4973/xxHash
 	[lcms2]=https://github.com/mm2/Little-CMS
-	# ["spirv-headers"]=https://github.com/KhronosGroup/SPIRV-Headers
-	# ["spirv-tools"]=https://github.com/KhronosGroup/SPIRV-Tools
-	# ["spirv-cross"]=https://github.com/KhronosGroup/SPIRV-Cross
+	["spirv-headers"]=https://github.com/KhronosGroup/SPIRV-Headers
+	["spirv-tools"]=https://github.com/KhronosGroup/SPIRV-Tools
+	["spirv-cross"]=https://github.com/KhronosGroup/SPIRV-Cross
 	[shaderc]=https://github.com/google/shaderc
 	[rav1e]=https://github.com/xiph/rav1e
 	[uchardet]=https://gitlab.freedesktop.org/uchardet/uchardet
@@ -141,9 +141,9 @@ declare -A AB_REPOS_DIRECT=(
 	[libressl]=3.1.1::https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.1.1.tar.gz
 	[winpthreads]=v6.0.1::https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v6.0.1.tar.bz2/download
 	# TODO: Change spirv-* stuff back to git once the 2024 version stabilizes (currently the latest git tags are incompatible)
-	["spirv-tools"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
-	["spirv-headers"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
-	["spirv-cross"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Cross/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
+	# ["spirv-tools"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
+	# ["spirv-headers"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
+	# ["spirv-cross"]=1.3.275.0::https://github.com/KhronosGroup/SPIRV-Cross/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz
 	[tcl]=https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.13-src.tar.gz
 	[openldap]=https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.6.6.tgz
 	[kerberos]=https://kerberos.org/dist/krb5/1.21/krb5-1.21.2.tar.gz

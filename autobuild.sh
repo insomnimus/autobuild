@@ -54,6 +54,8 @@ set -ue
 	AB_RUST_PANIC=abort
 	rust_codegen_units=1
 	AB_RUST_BUILD_STD=0
+
+	build_cmake=0
 }
 
 # shellcheck source-path=SCRIPTDIR/lib.sh
@@ -91,6 +93,7 @@ function show_help() {
 		   \$VERSION: The version string or git tag of the app that was built
 			\$ARCHIVE_PATH: Full path to the generated release archive
 		   COMMAND will be executed as if typed on a Bash prompt
+		  --install-cmake: Bootstrap and install a compatible version of CMake from source
 		  --list: List available app/multi recipes
 		  -h, --help: Show this message and exit
 	END
@@ -218,6 +221,7 @@ function err_exit() {
 			fi
 			AB_HOOK="$1"
 			;;
+		--install-cmake) build_cmake=1 ;;
 		-j | --jobs)
 			if ! shift; then
 				err_exit "the option -j --jobs requires a value"
@@ -274,6 +278,7 @@ function err_exit() {
 	AB_SOURCES="$AB_ROOT/sources"
 	AB_LOCAL="$AB_ROOT/local"
 
+	export PATH="$AB_WRAPPERS:$AB_LOCAL/bin:$PATH"
 	# Check for incorrect options.
 	if [[ ! $AB_ROOT =~ ^[a-zA-Z0-9/+\-_@\.=]+$ ]]; then
 		err_exit "--root must not contain special characters or whitespace"
@@ -317,6 +322,11 @@ function err_exit() {
 
 	recipes=("${_recipes[@]}")
 }
+
+if [[ $build_cmake == 1 ]]; then
+	. "$AB_DIR/scripts/install-cmake"
+	exit
+fi
 
 if [[ $clean == 1 ]]; then
 	need_exec git
@@ -418,7 +428,7 @@ mkdir -p -- "$AB_INSTALL" "$AB_ROOT/logs" "$AB_DB" "$AB_SOURCES" "$AB_PREFIX" "$
 
 )
 
-export PATH="$AB_WRAPPERS:$AB_LOCAL/bin:${AB_MINGW_SYSROOT:+$AB_MINGW_SYSROOT/x86_64-w64-mingw32}:$PATH"
+export PATH="${AB_MINGW_SYSROOT:+$AB_MINGW_SYSROOT/x86_64-w64-mingw32}:$PATH"
 unset CARGO_TARGET_DIR
 AB_TMP="$(mktemp -d autobuild_XXXXXX --tmpdir)"
 mkdir -- "$AB_TMP/checked-for-updates"

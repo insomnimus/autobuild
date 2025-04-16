@@ -29,7 +29,8 @@ zeranoe=(
 	lib{ass,xml2,freetype,harfbuzz}
 	lib{openjpeg,snappy,soxr,webp} #libbluray
 	lib{speex,theora,vidstab,zimg,rav1e}
-	libsvtav1:svt-av1 libvmaf libgsm
+	# libsvtav1:svt-av1
+	libvmaf libgsm
 )
 decoders=(
 	lib{dav1d,xevd,gsm,ilbc,opus,aribb24,gme}

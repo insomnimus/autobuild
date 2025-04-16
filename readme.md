@@ -22,7 +22,8 @@ Autobuild makes use of several commonly available programs:
 - [Dash](https://wiki.archlinux.org/title/Dash) (Used in compiler wrapper scripts due to it being significantly faster than `sh`)
 - GNU Make
 - [Ninja](https://ninja-build.org)
-- CMake version 3 or newer
+- CMake version >= 3.22, < 4.0<br>
+	You can easily install a standalone version of CMake with `autobuild.sh --install-cmake`. This won't touch your system whatsoever, and can be used even if you already have a system-wide CMake installation.
 - † [Meson](https://mesonbuild.com) version 1 or newer
 - GNU Autotools: `autoconf`, `automake`, `libtool` etc
 - [Autoconf archives for Autotools](https://github.com/autoconf-archive/autoconf-archive) (the macros are used by many configure scripts)

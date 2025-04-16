@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -ue
+
+commit=18c06ab8c431854056407c467f4755f761e36a8e
+git checkout "$commit"
+echo "$commit"
