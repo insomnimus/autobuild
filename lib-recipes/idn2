@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 download idn2 lib/libidn2.a
+msys_install
+exit 0
+
 install_lib iconv unistring
 
 set_env -fno-lto -l:libunistring.a -DIDN2_STATIC

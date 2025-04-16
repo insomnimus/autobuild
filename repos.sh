@@ -167,6 +167,7 @@ declare -A AB_REPOS_HTTP=(
 	[boost]=msys:boost
 	[icu]=msys:icu
 	[id3lib]=msys:id3lib
+	[idn2]=msys:libidn2
 	[openmp]=msys:llvm-openmp
 	[readline]=msys:readline
 	[systre]=msys:libsystre
@@ -182,7 +183,7 @@ declare -A AB_REPOS_HTTP=(
 	# GNU release archives
 	[ltdl]=gnu:libtool
 	[tasn1]=gnu:libtasn1
-	[idn2]=gnu:'libidn libidn2'
+	# [idn2]=gnu:'libidn libidn2'
 	[iconv]=gnu:libiconv
 	[libffi]=gnu:https://sourceware.org/pub/libffi
 	[cdio]=gnu:libcdio
