@@ -9,7 +9,7 @@ run autoreconf -i
 set_env \
 	c:-Wno-format \
 	cpp:-DFLAC__NO_DLL \
-	-l:libdl.a
+	-l:lib{dl,pthread}.a
 
 info "NOTE: If the configure step for sox fails, make sure you have autoconf-archive installed on your system (https://www.gnu.org/software/autoconf-archive/)"
 info "NOTE: Also if configure fails due to aclocal-1.16 or automake-1.16 being absent, you can usually symlink a newer version as aclocal-1.16 or automake-1.16"
