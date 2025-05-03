@@ -17,7 +17,10 @@ cmake_install .. \
 	-DOGG_INCLUDE_DIR="$AB_PREFIX/include" \
 	-DOGG_LIBRARY="$AB_PREFIX/lib/libogg.a"
 
-edit-pc -p "$AB_PREFIX/lib/pkgconfig/flac.pc" Cflags+=-DFLAC__NO_DLL
-edit-pc -p "$AB_PREFIX/lib/pkgconfig/flac++.pc" Cflags+=-DFLAC__NO_DLL
+for f in "$AB_PREFIX/lib/pkgconfig"/{flac,flac++}.pc; do
+	edit-pc -p "$f" \
+		Cflags+=-DFLAC__NO_DLL \
+		Cflags.private+=-l:libpthread.a
+done
 
 out "$AB_PREFIX/bin/"{flac,metaflac}.exe
