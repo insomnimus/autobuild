@@ -87,7 +87,7 @@ declare -A AB_REPOS_GIT=(
 	[xxhash]=https://github.com/Cyan4973/xxHash
 	[lcms2]=https://github.com/mm2/Little-CMS
 	["spirv-headers"]=https://github.com/KhronosGroup/SPIRV-Headers
-	["spirv-tools"]=https://github.com/KhronosGroup/SPIRV-Tools
+	# ["spirv-tools"]=https://github.com/KhronosGroup/SPIRV-Tools
 	["spirv-cross"]=https://github.com/KhronosGroup/SPIRV-Cross
 	[shaderc]=https://github.com/google/shaderc
 	[rav1e]=https://github.com/xiph/rav1e
@@ -135,6 +135,7 @@ declare -A AB_REPOS_GIT=(
 )
 
 declare -A AB_REPOS_DIRECT=(
+	["spirv-tools"]=1.4.309::https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-1.4.309.0/spirv-tools-1.4.309.0.tar.gz
 	[sqlite3]=3.45.2::https://www.sqlite.org/2024/sqlite-src-3450200.zip
 	[sdl2]=2.32.4::https://github.com/libsdl-org/SDL/releases/download/release-2.32.4/SDL2-2.32.4.tar.gz
 	[fontconfig]=2.15.0::https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz

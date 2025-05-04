@@ -3,6 +3,8 @@
 download spirv-tools lib/libSPIRV-Tools.a
 install_lib spirv-headers
 
+apply_patches -Nbp1
+
 set_env -l:libpthread.a
 
 mkcd autobuild
