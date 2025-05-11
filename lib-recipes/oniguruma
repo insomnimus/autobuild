@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+download oniguruma lib/libonig.a
+set_env
+
+mkcd autobuild
+cmake_install .. \
+	-DBUILD_{SHARED_LIBS,TEST}=OFF \
+	-DINSTALL_{DOCUMENTATION,EXAMPLES}=OFF

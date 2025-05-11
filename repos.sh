@@ -27,6 +27,7 @@ declare -A AB_REPOS_GIT=(
 	[mpv]=https://github.com/mpv-player/mpv
 	# [fluidsynth]=https://github.com/FluidSynth/fluidsynth
 	[jq]=https://github.com/jqlang/jq
+	[oniguruma]=https://github.com/kkos/oniguruma.git
 	[aria2]=https://github.com/aria2/aria2
 	[mujs]=git://git.ghostscript.com/mujs.git
 	[bzip2]=master:https://gitlab.com/bzip2/bzip2
