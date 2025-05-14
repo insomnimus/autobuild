@@ -10,6 +10,7 @@ declare -A AB_REPOS_GIT=(
 	[cross]=https://github.com/cross-rs/cross.git
 	[miniserve]=https://github.com/svenstaro/miniserve.git
 	[ripgrep]=https://github.com/BurntSushi/ripgrep
+	[ruff]=https://github.com/astral-sh/ruff.git
 	[rustfilt]=https://github.com/luser/rustfilt.git
 	[tokei]=https://github.com/XAMPPRocky/tokei
 	[uv]=https://github.com/astral-sh/uv
