@@ -12,6 +12,7 @@ declare -A AB_REPOS_GIT=(
 	[ripgrep]=https://github.com/BurntSushi/ripgrep
 	[ruff]=https://github.com/astral-sh/ruff.git
 	[rustfilt]=https://github.com/luser/rustfilt.git
+	[sd]=https://github.com/chmln/sd.git
 	[tokei]=https://github.com/XAMPPRocky/tokei
 	[uv]=https://github.com/astral-sh/uv
 	[mdbook]=https://github.com/rust-lang/mdBook.git
